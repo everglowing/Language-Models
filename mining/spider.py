@@ -3,7 +3,12 @@ import requests
 import re
 from bs4 import BeautifulSoup
 
-images = re.compile(r'\.(jpg|png|gif|bmp)$')
+LANGUAGE = "ml"
+PAGE_LIMIT = 10
+DEPTH = 4
+FILE_NAME = "sample_malayalam.txt"
+
+# Look up tables
 languages = {
   "hi": ur"[^\u0900-\u097F]+",
   "ml": ur"[^\u0D00-\u0D7F]+",
@@ -19,6 +24,8 @@ seed_urls = {
   "te": "https://te.wikipedia.org/wiki/%E0%B0%97%E0%B1%81%E0%B0%82%E0%B0%A1%E0%B1%81_%E0%B0%B8%E0%B1%81%E0%B0%A6%E0%B0%B0%E0%B1%8D%E0%B0%B6%E0%B0%A8%E0%B1%8D",
 }
 
+# Used to remove image URLs
+images = re.compile(r'\.(jpg|png|gif|bmp)$')
 
 def fetch_webpage(url):
   try:
@@ -118,11 +125,11 @@ class Spider(object):
     self.data = ""
 
 def main():
-  s = Spider(seed_url=seed_urls["kn"],
-             depth=4,
-             lang="kn",
-             page_limit=1000,
-             filename="kannada.txt")
+  s = Spider(seed_url=seed_urls[LANGUAGE],
+             depth=DEPTH,
+             lang=LANGUAGE,
+             page_limit=PAGE_LIMIT,
+             filename=FILE_NAME)
   s.run(write_file=True)
   print s.data
 
