@@ -3,10 +3,10 @@ import requests
 import re
 from bs4 import BeautifulSoup
 
-LANGUAGE = "ml"
-PAGE_LIMIT = 10
+LANGUAGE = "te"
+PAGE_LIMIT = 5
 DEPTH = 4
-FILE_NAME = "sample_malayalam.txt"
+FILE_NAME = "sample_telugu.txt"
 
 # Look up tables
 languages = {
