@@ -28,6 +28,10 @@ seed_urls = {
 images = re.compile(r'\.(jpg|png|gif|bmp)$')
 
 def fetch_webpage(url):
+  """
+  Download webpage using requests.
+  Will return "" when invalid URL.
+  """
   try:
     r = requests.get(url)
     r.raise_for_status()
@@ -37,15 +41,23 @@ def fetch_webpage(url):
   return r.text
 
 def remove_peripherals(text, lang):
+  """
+  Used to remove all characters not in unicode block
+  for that language.
+  """
   return re.sub(languages[lang], " ", text)
 
 
 class WikiWebpage(object):
-  '''
+  """
   Class to get specific data from Wikipedia article.
   Requires a Wikipedia URL for initialization.
-  '''
+  """
   def __init__(self, url, lang="en"):
+    """
+    Makes a BeautifulSoup object which has downloaded
+    the webpage.
+    """
     self.url = url
     self.lang = lang
     self.soup = BeautifulSoup(fetch_webpage(url), "lxml")
@@ -54,6 +66,10 @@ class WikiWebpage(object):
     return "Wikipedia Webpage - " + self.url
 
   def get_child_urls(self):
+    """
+    Returns a list of all URLs of 'mw-redirect' class and
+    on the same language domain.
+    """
     # Not using regex as it is trivial here
     url_template = "/wiki/"
     child_urls = []
@@ -67,6 +83,9 @@ class WikiWebpage(object):
     return child_urls
 
   def get_data(self):
+    """
+    Gets a list of all the paragraph texts, stripped of HTML.
+    """
     data = []
     for p in self.soup.find_all('p'):
       if p.getText().strip() != "":
@@ -75,11 +94,18 @@ class WikiWebpage(object):
 
 
 class Spider(object):
-  '''
+  """
   Class which makes objects of the WikiWebpage type and recursively
   iterates over the tree.
-  '''
+  """
   def __init__(self, seed_url, depth, lang, page_limit, filename="data.txt"):
+    """
+    seed_url: The initial url the crawler uses.
+    depth: The maximum number of levels of the BFS.
+    lang: Two alphabet lowercase language code.
+    page_limit: Maximum number of URLs you wish to scan.
+    filename: Output file name.
+    """
     self.seed_url = seed_url
     self.depth = depth
     self.lang = lang
@@ -89,40 +115,60 @@ class Spider(object):
     self.filename = filename
 
   def run(self, write_file=True):
+    """
+    Runs the crawler until depth is reached
+    or page_limit is crossed.
+    write_file: If True, file is written after each fetch.
+    """
     self.data = ""
     self.urls = [self.seed_url]
     current_urls = [self.seed_url]
     next_list = []
     # depth of BFS
     for i in range(0, self.depth):
+      # Current depth's status
       print "Depth " + str(i) + " => " + str(len(current_urls)) + " URL(s)"
+
       for index, url in enumerate(current_urls):
+        # Build a WikiWebpage object which will do the scraping
         w = WikiWebpage(url, self.lang)
         # List of all URLs scanned
         self.urls.append(url)
         if (index+1) % 10 == 0:
           print "\t URLs scanned => " + str(index + 1)
+
         # Extract all the data
         for data in w.get_data():
           self.data += remove_peripherals(data, self.lang)
           self.data += "\n"
-        # Get all child urls not processed before
+
+        # Get all child urls
         child_urls = w.get_child_urls()
+        # Filter out processed child URLs
         child_urls = filter(lambda x: child_urls not in self.urls, child_urls)
         next_list.extend(child_urls)
+
+        # Write file and clear data object
         if write_file:
           self.write_file()
+
         # Impose condition of total URLs
         if len(self.urls) >= self.page_limit:
           print "URL limit reached!"
           return
-      # Remove possible duplicates
+
+      # Remove duplicates URLs
       current_urls = list(set(next_list))
 
   def write_file(self):
+    """
+    Clear self.data and append the file specified
+    in the Spider object.
+    """
     with codecs.open(self.filename, "a", "utf8") as myfile:
       myfile.write(self.data)
     self.data = ""
+
 
 def main():
   s = Spider(seed_url=seed_urls[LANGUAGE],
