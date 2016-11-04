@@ -3,10 +3,10 @@ import requests
 import re
 from bs4 import BeautifulSoup
 
-LANGUAGE = "te"
-PAGE_LIMIT = 5
+LANGUAGE = "hi"
+PAGE_LIMIT = 50
 DEPTH = 4
-FILE_NAME = "sample_telugu.txt"
+FILE_NAME = "hindi_txt.txt"
 
 # Look up tables
 languages = {
@@ -75,7 +75,7 @@ class WikiWebpage(object):
     child_urls = []
     for a in self.soup.findAll('a'):
       if a.get('href') and a.get('href').startswith(url_template) and \
-         a.get('class', [None])[0] == 'mw-redirect':
+         a.get('class', [None])[0] != 'mw-redirect':
         child_urls.append("https://" + self.lang + ".wikipedia.org" + a['href'])
 
     # filtering image files
@@ -88,8 +88,9 @@ class WikiWebpage(object):
     """
     data = []
     for p in self.soup.find_all('p'):
-      if p.getText().strip() != "":
-        data.append(p.getText().strip())
+      text = remove_peripherals(p.getText().strip(), self.lang)
+      if text != "" and text.count("\n") == 0 and len(text.split()) > 10:
+        data.append(text)
     return data
 
 
@@ -141,8 +142,7 @@ class Spider(object):
 
         # Extract all the data
         for data in w.get_data():
-          self.data += remove_peripherals(data, self.lang)
-          self.data += "\n"
+          self.data += data + "\n"
 
         # Get all child urls
         child_urls = w.get_child_urls()
