@@ -145,7 +145,7 @@ class Spider(object):
         # Get all child urls
         child_urls = w.get_child_urls()
         # Filter out processed child URLs
-        child_urls = filter(lambda x: child_urls not in self.urls, child_urls)
+        child_urls = filter(lambda x: x not in self.urls, child_urls)
         next_list.extend(child_urls)
 
         # Write file and clear data object
