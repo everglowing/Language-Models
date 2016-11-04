@@ -109,7 +109,7 @@ class Spider(object):
     self.seed_url = seed_url
     self.depth = depth
     self.lang = lang
-    self.urls = [self.seed_url]
+    self.urls = []
     self.data = ""
     self.page_limit = page_limit
     self.filename = filename
