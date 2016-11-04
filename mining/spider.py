@@ -121,7 +121,6 @@ class Spider(object):
     write_file: If True, file is written after each fetch.
     """
     self.data = ""
-    self.urls = [self.seed_url]
     current_urls = [self.seed_url]
     next_list = []
     # depth of BFS
@@ -130,11 +129,14 @@ class Spider(object):
       print "Depth " + str(i) + " => " + str(len(current_urls)) + " URL(s)"
 
       for index, url in enumerate(current_urls):
+        if url in self.urls:
+          print "Repeat found!"
+          continue
         # Build a WikiWebpage object which will do the scraping
         w = WikiWebpage(url, self.lang)
         # List of all URLs scanned
         self.urls.append(url)
-        if (index+1) % 10 == 0:
+        if (index+1) % 100 == 0:
           print "\t URLs scanned => " + str(index + 1)
 
         # Extract all the data
