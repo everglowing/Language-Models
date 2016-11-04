@@ -35,7 +35,7 @@ def fetch_webpage(url):
   try:
     r = requests.get(url)
     r.raise_for_status()
-  except requests.exceptions.HTTPError as err:
+  except Exception as err:
     print err
     return ""
   return r.text
