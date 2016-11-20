@@ -3,18 +3,18 @@ import requests
 import re
 from bs4 import BeautifulSoup
 
-LANGUAGE = "hi"
+LANGUAGE = "te"
 PAGE_LIMIT = 50
 DEPTH = 4
-FILE_NAME = "hindi_txt.txt"
+FILE_NAME = "ta.txt"
 
 # Look up tables
 languages = {
   "hi": ur"[^\u0900-\u097F]+",
-  "ml": ur"[^\u0D00-\u0D7F]+",
-  "ta": ur"[^\u0B80-\u0BFF]+",
-  "kn": ur"[^\u0C80-\u0CFF]+",
-  "te": ur"[^\u0C00-\u0C7F]+",
+  "ml": ur"[^\u0D00-\u0D7F\u002E]+",
+  "ta": ur"[^\u0B80-\u0BFF\u002E]+",
+  "kn": ur"[^\u0C80-\u0CFF\u002E]+",
+  "te": ur"[^\u0C00-\u0C7F\u002E]+",
 }
 seed_urls = {
   "hi": "https://hi.wikipedia.org/wiki/%E0%A4%B6%E0%A4%BE%E0%A4%B9%E0%A4%B0%E0%A5%81%E0%A4%96%E0%A4%BC_%E0%A4%96%E0%A4%BC%E0%A4%BE%E0%A4%A8",
