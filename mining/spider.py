@@ -18,7 +18,7 @@ languages = {
 }
 seed_urls = {
   "hi": "https://hi.wikipedia.org/wiki/%E0%A4%B6%E0%A4%BE%E0%A4%B9%E0%A4%B0%E0%A5%81%E0%A4%96%E0%A4%BC_%E0%A4%96%E0%A4%BC%E0%A4%BE%E0%A4%A8",
-  "ml": "https://ml.wikipedia.org/wiki/%E0%B4%AE%E0%B5%88%E0%B4%95%E0%B5%8D%E0%B4%95%E0%B5%8D%E0%B5%BD_%E0%B4%9C%E0%B4%BE%E0%B4%95%E0%B5%8D%E0%B4%B8%E0%B5%BA",
+  "ml": "https://ml.wikipedia.org/wiki/%E0%B4%B5%E0%B4%BF%E0%B4%9C%E0%B4%AF%E0%B4%A8%E0%B4%97%E0%B4%B0_%E0%B4%B8%E0%B4%BE%E0%B4%AE%E0%B5%8D%E0%B4%B0%E0%B4%BE%E0%B4%9C%E0%B5%8D%E0%B4%AF%E0%B4%82",
   "ta": "https://ta.wikipedia.org/wiki/%E0%AE%A4%E0%AE%BF%E0%AE%B0%E0%AF%81%E0%AE%B5%E0%AF%8B%E0%AE%B5%E0%AE%BF%E0%AE%AF%E0%AE%AE%E0%AF%8D",
   "kn": "https://kn.wikipedia.org/wiki/%E0%B2%AC%E0%B3%86%E0%B2%82%E0%B2%97%E0%B2%B3%E0%B3%82%E0%B2%B0%E0%B3%81",
   "te": "https://te.wikipedia.org/wiki/%E0%B0%97%E0%B1%81%E0%B0%82%E0%B0%A1%E0%B1%81_%E0%B0%B8%E0%B1%81%E0%B0%A6%E0%B0%B0%E0%B1%8D%E0%B0%B6%E0%B0%A8%E0%B1%8D",
