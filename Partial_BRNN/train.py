@@ -24,7 +24,7 @@ def main():
                        help='rnn, gru, or lstm')
     parser.add_argument('--model', type=str, default='uni',
                        help='uni, or bi')
-    parser.add_argument('--back_steps', type=str, default=5,
+    parser.add_argument('--back_steps', type=int, default=5,
                        help='Number of steps in BRNN')
     parser.add_argument('--batch_size', type=int, default=50,
                        help='minibatch size')

@@ -57,9 +57,11 @@ class Model():
                     (temp_output, back_state) = bw_cell(inputs[:, i-time_step, :], back_state)
                     if time_step == args.back_steps - 1: # Last time step
                         back_outputs.append(temp_output)
+        op = []
+        for i in range(len(outputs)):
+            op.append(tf.concat(1, [outputs[i], back_outputs[i]]))
 
-
-        output = tf.reshape(tf.concat(2, [tf.pack(outputs), tf.pack(back_outputs)]), [-1, 2*args.rnn_size])
+        output = tf.reshape(tf.concat(1, op), [-1, 2*args.rnn_size])
 
         self.logits = tf.matmul(output, softmax_w) + softmax_b
 
