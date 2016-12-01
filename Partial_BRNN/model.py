@@ -81,7 +81,6 @@ class Model():
     def eval(self, sess, chars, vocab, text):
         batch_size = 200
         state = sess.run(self.cell.zero_state(1, tf.float32))
-        state2 = sess.run(self.cell2.zero_state(1, tf.float32))
         x = [vocab[c] if c in vocab else vocab['UNK'] for c in text]
         x = [vocab['<S>']] + x + [vocab['</S>']]
         total_len = len(x) - 1
@@ -91,11 +90,18 @@ class Model():
         y = np.array(x[1:]).reshape((-1, batch_size))
         x = np.array(x[:-1]).reshape((-1, batch_size))
 
+        prep_array = vocab[' ']*np.ones([self.args.back_steps-1])
+        x1 = []
+        for i in range(0, len(x)):
+            x1.append(np.concatenate((prep_array, x[i])))
+            prep_array = x[i][-1*(self.args.back_steps-1):]
+        x = np.array(x1)
+
         total_loss = 0.0
         for i in range(x.shape[0]):
             feed = {self.input_data: x[i:i+1, :], self.targets: y[i:i+1, :],
-                    self.initial_state: state, self.initial_state2: state2}
-            [state, state2, loss] = sess.run([self.last_state, self.last_state2, self.loss], feed)
+                    self.initial_state: state}
+            [state, loss] = sess.run([self.last_state, self.loss], feed)
             total_loss += loss.sum()
         # need to subtract off loss from padding tokens
         total_loss -= loss[total_len % batch_size - batch_size:].sum()
