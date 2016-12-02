@@ -6,7 +6,7 @@ from tensorflow.python.ops import seq2seq
 import numpy as np
 
 class Model():
-    def __init__(self, args, infer=False):
+    def __init__(self, args, infer=False, evaluation=False):
         self.args = args
         if infer:
             args.batch_size = 1
@@ -21,7 +21,12 @@ class Model():
             raise Exception("model type not supported: {}".format(args.model))
 
         self.cell = fw_cell = cell_fn(args.rnn_size, state_is_tuple=True)
+        if not evaluation:
+            self.cell = fw_cell = tf.nn.rnn_cell.DropoutWrapper(fw_cell, output_keep_prob=args.keep_prob)
+
         self.cell2 = bw_cell = cell_fn(args.rnn_size, state_is_tuple=True)
+        if not evaluation:
+            self.cell2 = bw_cell = tf.nn.rnn_cell.DropoutWrapper(bw_cell, output_keep_prob=args.keep_prob)
 
         self.input_data = tf.placeholder(tf.int32, [args.batch_size, args.seq_length + args.back_steps - 1])
         self.targets = tf.placeholder(tf.int32, [args.batch_size, args.seq_length])

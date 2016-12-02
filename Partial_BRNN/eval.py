@@ -29,7 +29,7 @@ def eval(args):
     saved_args.seq_length = 200
     with open(os.path.join(args.save_dir, 'chars_vocab.pkl'), 'rb') as f:
         chars, vocab = cPickle.load(f)
-    model = Model(saved_args, False)
+    model = Model(saved_args, infer=False, evaluation=True)
 
     with codecs.open(args.text, 'r', encoding='utf-8') as f:
         text = f.read()
