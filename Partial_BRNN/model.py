@@ -20,11 +20,13 @@ class Model():
         else:
             raise Exception("model type not supported: {}".format(args.model))
 
-        self.cell = fw_cell = cell_fn(args.rnn_size, state_is_tuple=True)
+        fw_cell = cell_fn(args.rnn_size, state_is_tuple=True)
+        self.cell = fw_cell = rnn_cell.MultiRNNCell([fw_cell] * args.num_layers, state_is_tuple=True)
         if not evaluation:
             self.cell = fw_cell = tf.nn.rnn_cell.DropoutWrapper(fw_cell, output_keep_prob=args.keep_prob)
 
-        self.cell2 = bw_cell = cell_fn(args.rnn_size, state_is_tuple=True)
+        bw_cell = cell_fn(args.rnn_size, state_is_tuple=True)
+        self.cell2 = bw_cell = rnn_cell.MultiRNNCell([bw_cell] * args.num_layers, state_is_tuple=True)
         if not evaluation:
             self.cell2 = bw_cell = tf.nn.rnn_cell.DropoutWrapper(bw_cell, output_keep_prob=args.keep_prob)
 
