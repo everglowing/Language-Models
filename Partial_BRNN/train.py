@@ -26,6 +26,8 @@ def main():
                        help='uni, or bi')
     parser.add_argument('--back_steps', type=int, default=5,
                        help='Number of steps in BRNN')
+    parser.add_argument('--dropout', type=bool, default=False,
+                       help='Number of steps in BRNN')
     parser.add_argument('--keep_prob', type=float, default=0.35,
                        help='Number of steps in BRNN')
     parser.add_argument('--batch_size', type=int, default=50,

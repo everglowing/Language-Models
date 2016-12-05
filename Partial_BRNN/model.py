@@ -22,12 +22,13 @@ class Model():
 
         fw_cell = cell_fn(args.rnn_size, state_is_tuple=True)
         self.cell = fw_cell = rnn_cell.MultiRNNCell([fw_cell] * args.num_layers, state_is_tuple=True)
-        if not evaluation:
+        if not evaluation and args.dropout == True:
+            print "yolo"
             self.cell = fw_cell = tf.nn.rnn_cell.DropoutWrapper(fw_cell, output_keep_prob=args.keep_prob)
 
         bw_cell = cell_fn(args.rnn_size, state_is_tuple=True)
         self.cell2 = bw_cell = rnn_cell.MultiRNNCell([bw_cell] * args.num_layers, state_is_tuple=True)
-        if not evaluation:
+        if not evaluation and args.dropout == True:
             self.cell2 = bw_cell = tf.nn.rnn_cell.DropoutWrapper(bw_cell, output_keep_prob=args.keep_prob)
 
         self.input_data = tf.placeholder(tf.int32, [args.batch_size, args.seq_length + args.back_steps - 1])
