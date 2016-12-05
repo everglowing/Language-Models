@@ -23,7 +23,7 @@ class Model():
         fw_cell = cell_fn(args.rnn_size, state_is_tuple=True)
         self.cell = fw_cell = rnn_cell.MultiRNNCell([fw_cell] * args.num_layers, state_is_tuple=True)
         if not evaluation and args.dropout == True:
-            print "yolo"
+            print "Using dropout layer"
             self.cell = fw_cell = tf.nn.rnn_cell.DropoutWrapper(fw_cell, output_keep_prob=args.keep_prob)
 
         bw_cell = cell_fn(args.rnn_size, state_is_tuple=True)
