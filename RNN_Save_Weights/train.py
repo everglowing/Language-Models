@@ -88,13 +88,20 @@ def train(args):
     with tf.Session() as sess:
         tf.initialize_all_variables().run()
         saver = tf.train.Saver(tf.all_variables())
-        saver2 = tf.train.Saver(tf.get_collection(tf.GraphKeys.VARIABLES, scope='RNN'))
+        list_vars = []
+        list_vars = tf.get_collection(tf.GraphKeys.VARIABLES, scope='RNN')
+        for var in tf.all_variables():
+            if var in list_vars:
+                continue
+            if not var.name.startswith("rnnlm"):
+                list_vars.append(var)
+        saver2 = tf.train.Saver(list_vars)
         # restore model
         if args.init_from is not None:
             saver.restore(sess, ckpt.model_checkpoint_path)
         if args.init_weights is not None:
-            weight_model_path = tf.train.get_checkpoint_state(args.init_weights)
-            saver2.restore(sess, weight_model_path.model_checkpoint_path)
+            weight_model_path = tf.train.get_checkpoint_state(args.init_weights).model_checkpoint_path
+            saver2.restore(sess, weight_model_path)
             print("Loaded weights from weights/ folder")
         for e in range(args.num_epochs):
             sess.run(tf.assign(model.lr, args.learning_rate * (args.decay_rate ** e)))
