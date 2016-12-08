@@ -93,9 +93,8 @@ def train(args):
         for var in tf.all_variables():
             if var in list_vars:
                 continue
-            list_vars.append(var)
-            #if not var.name.startswith("rnnlm"):
-            #    list_vars.append(var)
+            if not var.name.startswith("rnnlm") or "Adam" in var.name:
+                list_vars.append(var)
         saver2 = tf.train.Saver(list_vars)
         # restore model
         if args.init_from is not None:
