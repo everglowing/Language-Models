@@ -90,11 +90,11 @@ def train(args):
         saver = tf.train.Saver(tf.all_variables())
         list_vars = []
         list_vars = tf.get_collection(tf.GraphKeys.VARIABLES, scope='RNN')
-        # for var in tf.all_variables():
-        #     if var in list_vars:
-        #         continue
-        #     if not var.name.startswith("rnnlm") or "Adam" in var.name:
-        #         list_vars.append(var)
+        for var in tf.all_variables():
+            if var in list_vars:
+                continue
+            if not var.name.startswith("rnnlm") or "Adam" in var.name:
+                list_vars.append(var)
         saver2 = tf.train.Saver(list_vars)
         # restore model
         if args.init_from is not None:
