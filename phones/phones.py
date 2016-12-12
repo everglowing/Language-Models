@@ -55,8 +55,6 @@ class PhoneWikiWebpage(object):
             else:
               letter = letter.strip()
             counter += 1
-            if letter.strip() in lists:
-              print letter.strip()
             lists[letter.strip()] = cells[0].getText().strip();
     return lists
 
@@ -66,12 +64,16 @@ def main():
   p = p.build_phones()
   p2 = PhoneWikiWebpage("https://en.wikipedia.org/wiki/Help:IPA_for_Tamil", "Tamil")
   p2 = p2.build_phones()
-  # print "Malayalam"
-  # for key,val in p.iteritems():
-  #   print key + "  corresponds to " + val
-  # print "\nTamil"
-  # for key,val in p2.iteritems():
-  #   print key + "  corresponds to " + val
+  tamil = ""
+  for key,val in p2.iteritems():
+    tamil += key + " " + val + "\n"
+  malayalam = ""
+  for key,val in p2.iteritems():
+    malayalam += key + " " + val + "\n"
+  with codecs.open('tamil_wiki.txt', 'w', 'utf-8') as f:
+    f.write(tamil)
+  with codecs.open('malayalam_wiki.txt', 'w', 'utf-8') as f:
+    f.write(malayalam)
 
 if __name__ == "__main__":
   main()

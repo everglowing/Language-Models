@@ -4,9 +4,9 @@ import re
 from bs4 import BeautifulSoup
 
 LANGUAGE = "te"
-PAGE_LIMIT = 50
-DEPTH = 4
-FILE_NAME = "ta.txt"
+PAGE_LIMIT = 300
+DEPTH = 10
+FILE_NAME = "final_te.txt"
 
 # Look up tables
 languages = {
