@@ -59,21 +59,43 @@ class Model():
         optimizer = tf.train.AdamOptimizer(self.lr)
         self.train_op = optimizer.apply_gradients(zip(grads, tvars))
 
+    def convert_ipa(self, tensor):
+        with codecs.open(self.args.ipa_file, "r", encoding=self.encoding) as f:
+            data = f.readlines()
+        table = {}
+        vocab_size = 0
+        for l in data:
+            encoding = int(l.split('\t')[1][:-1])
+            table[l.split('\t')[0]] = encoding
+            if encoding > vocab_size:
+                vocab_size = encoding
+        table['.'] = vocab_size + 1
+        table[' '] = vocab_size + 2
+        table['<S>'] = vocab_size + 3
+        table['</S>'] = vocab_size + 4
+        table['\n'] = vocab_size + 5
+        table['UNK'] = vocab_size + 6
+        ipa_tensor = np.copy(tensor)
+        for x, value in np.ndenumerate(tensor):
+            ipa_tensor[x] = table[self.reverse_vocab[value]]
+        return ipa_tensor
+
     def eval(self, sess, chars, vocab, text):
         batch_size = 200
         state = sess.run(self.cell.zero_state(1, tf.float32))
         x = [vocab[c] if c in vocab else vocab['UNK'] for c in text]
         x = [vocab['<S>']] + x + [vocab['</S>']]
+        ipa_x = convert_ipa(x)
         total_len = len(x) - 1
         # pad x so the batch_size divides it
         while len(x) % 200 != 1:
             x.append(vocab[' '])
         y = np.array(x[1:]).reshape((-1, batch_size))
-        x = np.array(x[:-1]).reshape((-1, batch_size))
+        ipa_x = np.array(ipa_x[:-1]).reshape((-1, batch_size))
 
         total_loss = 0.0
-        for i in range(x.shape[0]):
-            feed = {self.input_data: x[i:i+1, :], self.targets: y[i:i+1, :],
+        for i in range(ipa_x.shape[0]):
+            feed = {self.input_data: ipa_x[i:i+1, :], self.targets: y[i:i+1, :],
                     self.initial_state: state}
             [state, loss] = sess.run([self.final_state, self.loss], feed)
             total_loss += loss.sum()
