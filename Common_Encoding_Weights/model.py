@@ -62,7 +62,7 @@ class Model():
 
     def convert_ipa(self, tensor, vocab):
         reverse_vocab = {v: k for k, v in vocab.iteritems()}
-        with codecs.open(self.args.ipa_file, "r", encoding=self.encoding) as f:
+        with codecs.open(self.args.ipa_file, "r", encoding='utf-8') as f:
             data = f.readlines()
         table = {}
         vocab_size = 0
@@ -77,7 +77,6 @@ class Model():
         table['</S>'] = vocab_size + 4
         table['\n'] = vocab_size + 5
         table['UNK'] = vocab_size + 6
-        ipa_tensor = np.copy(tensor)
         ipa_tensor = table[reverse_vocab[tensor]]
         # for x, value in np.ndenumerate(tensor):
         #     ipa_tensor[x] = table[self.reverse_vocab[value]]
