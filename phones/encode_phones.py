@@ -19,7 +19,7 @@ malayalam = {}
 for l in table:
 	key = l.split('\t')[0]
 	if len(key) > 1:
-		print key
+		print key + " - " + str(len(key))
 	value = l.split('\t')[1][:-1]
 	malayalam[key] = value
 
