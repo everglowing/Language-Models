@@ -26,6 +26,10 @@ def main():
                        help='number of layers in the RNN')
     parser.add_argument('--model', type=str, default='lstm',
                        help='rnn, gru, or lstm')
+    parser.add_argument('--dropout', type=bool, default=True,
+                       help='Boolean on dropout')
+    parser.add_argument('--keep_prob', type=float, default=0.8,
+                       help='Keep probability of dropout')
     parser.add_argument('--batch_size', type=int, default=50,
                        help='minibatch size')
     parser.add_argument('--seq_length', type=int, default=50,
@@ -93,11 +97,14 @@ def train(args):
         saver = tf.train.Saver(tf.all_variables())
         list_vars = []
         list_vars = tf.get_collection(tf.GraphKeys.VARIABLES, scope='RNN')
+
         for var in tf.all_variables():
             if var in list_vars:
                 continue
-            if not var.name.startswith("rnnlm"):
+            if not var.name.startswith("rnnlm/softmax"):
                 list_vars.append(var)
+        for var in list_vars:
+            print(var.name)
         saver2 = tf.train.Saver(list_vars)
         # restore model
         if args.init_from is not None:

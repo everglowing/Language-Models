@@ -6,7 +6,7 @@ import codecs
 import numpy as np
 
 class Model():
-    def __init__(self, args, infer=False):
+    def __init__(self, args, infer=False, evaluation=False):
         self.args = args
         if infer:
             args.batch_size = 1
@@ -23,6 +23,10 @@ class Model():
 
         cell = cell_fn(args.rnn_size, state_is_tuple=True)
         self.cell = cell = rnn_cell.MultiRNNCell([cell] * args.num_layers, state_is_tuple=True)
+        if not evaluation and args.dropout == True:
+            print "Using dropout layer"
+            self.cell = cell = tf.nn.rnn_cell.DropoutWrapper(cell, output_keep_prob=args.keep_prob)
+
         self.input_data = tf.placeholder(tf.int32, [args.batch_size, args.seq_length])
         self.targets = tf.placeholder(tf.int32, [args.batch_size, args.seq_length])
         self.initial_state = cell.zero_state(args.batch_size, tf.float32)
