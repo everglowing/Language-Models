@@ -80,7 +80,7 @@ class Model():
         ipa_tensor = np.copy(tensor)
         #ipa_tensor = table[reverse_vocab[tensor]]
         for x, value in np.ndenumerate(tensor):
-            ipa_tensor[x] = table[self.reverse_vocab[value]]
+            ipa_tensor[x] = table[reverse_vocab[value]]
         return ipa_tensor
 
     def eval(self, sess, chars, vocab, text):
