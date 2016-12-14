@@ -88,14 +88,14 @@ class Model():
         state = sess.run(self.cell.zero_state(1, tf.float32))
         x = [vocab[c] if c in vocab else vocab['UNK'] for c in text]
         x = [vocab['<S>']] + x + [vocab['</S>']]
-        ipa_x = self.convert_ipa(x, vocab)
         total_len = len(x) - 1
         # pad x so the batch_size divides it
         while len(x) % 200 != 1:
             x.append(vocab[' '])
+        ipa_x = self.convert_ipa(x, vocab)
         y = np.array(x[1:]).reshape((-1, batch_size))
         ipa_x = np.array(ipa_x[:-1]).reshape((-1, batch_size))
-
+        print "Data loaded"
         total_loss = 0.0
         for i in range(ipa_x.shape[0]):
             feed = {self.input_data: ipa_x[i:i+1, :], self.targets: y[i:i+1, :],
