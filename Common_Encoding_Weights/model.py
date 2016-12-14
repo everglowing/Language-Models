@@ -59,7 +59,8 @@ class Model():
         optimizer = tf.train.AdamOptimizer(self.lr)
         self.train_op = optimizer.apply_gradients(zip(grads, tvars))
 
-    def convert_ipa(self, tensor):
+    def convert_ipa(self, tensor, vocab):
+        reverse_vocab = {v: k for k, v in vocab.iteritems()}
         with codecs.open(self.args.ipa_file, "r", encoding=self.encoding) as f:
             data = f.readlines()
         table = {}
@@ -76,8 +77,9 @@ class Model():
         table['\n'] = vocab_size + 5
         table['UNK'] = vocab_size + 6
         ipa_tensor = np.copy(tensor)
-        for x, value in np.ndenumerate(tensor):
-            ipa_tensor[x] = table[self.reverse_vocab[value]]
+        ipa_tensor = table[reverse_vocab[tensor]]
+        # for x, value in np.ndenumerate(tensor):
+        #     ipa_tensor[x] = table[self.reverse_vocab[value]]
         return ipa_tensor
 
     def eval(self, sess, chars, vocab, text):
@@ -85,7 +87,7 @@ class Model():
         state = sess.run(self.cell.zero_state(1, tf.float32))
         x = [vocab[c] if c in vocab else vocab['UNK'] for c in text]
         x = [vocab['<S>']] + x + [vocab['</S>']]
-        ipa_x = convert_ipa(x)
+        ipa_x = convert_ipa(x, vocab)
         total_len = len(x) - 1
         # pad x so the batch_size divides it
         while len(x) % 200 != 1:
