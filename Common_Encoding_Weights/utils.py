@@ -47,8 +47,6 @@ class TextLoader():
         self.table = table
         self.ipa_vocab_size = vocab_size
         for x, value in np.ndenumerate(self.tensor):
-            if table[self.reverse_vocab[value]] >= 83:
-                print self.reverse_vocab[value]
             self.ipa_tensor[x] = table[self.reverse_vocab[value]]
 
     def preprocess(self, input_file, vocab_file, tensor_file):
@@ -87,7 +85,7 @@ class TextLoader():
             assert False, "Not enough data. Make seq_length and batch_size small."
 
         self.tensor = self.tensor[:self.num_batches * self.batch_size * self.seq_length]
-        self.ipa_tensor = self.tensor[:self.num_batches * self.batch_size * self.seq_length]
+        self.ipa_tensor = self.ipa_tensor[:self.num_batches * self.batch_size * self.seq_length]
         xdata = self.tensor
         ydata = np.copy(self.tensor)
         ydata[:-1] = xdata[1:]
