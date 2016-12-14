@@ -28,6 +28,12 @@ for k, v in malayalam.iteritems():
 
 extra = []
 
+while i < len(data):
+	c = data[i]
+	c2 = data[i:i+2]
+	if c2 in malayalam:
+		print c2
+
 for c in data:
 	if c not in malayalam and c not in extra:
 		extra.append(c)
