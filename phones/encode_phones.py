@@ -40,6 +40,7 @@ while i < len(data):
 		i += 1
 		if c not in malayalam and c not in extra:
 			extra.append(c)
+			print c2
 
 print extra
 
