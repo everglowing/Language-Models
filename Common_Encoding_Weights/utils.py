@@ -37,13 +37,13 @@ class TextLoader():
             table[l.split('\t')[0]] = encoding
             if encoding > vocab_size:
                 vocab_size = encoding
+        table['.'] = vocab_size + 1
+        table[' '] = vocab_size + 2
+        table['<S>'] = vocab_size + 3
+        table['</S>'] = vocab_size + 4
+        table['\n'] = vocab_size + 5
+        table['UNK'] = vocab_size + 6
         vocab_size += 7
-        table['.'] = 87
-        table[' '] = 88
-        table['<S>'] = 89
-        table['</S>'] = 90
-        table['\n'] = 91
-        table['UNK'] = 92
         self.table = table
         self.ipa_vocab_size = vocab_size
         for x, value in np.ndenumerate(self.tensor):
