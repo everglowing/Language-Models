@@ -77,9 +77,10 @@ class Model():
         table['</S>'] = vocab_size + 4
         table['\n'] = vocab_size + 5
         table['UNK'] = vocab_size + 6
-        ipa_tensor = table[reverse_vocab[tensor]]
-        # for x, value in np.ndenumerate(tensor):
-        #     ipa_tensor[x] = table[self.reverse_vocab[value]]
+        ipa_tensor = np.copy(tensor)
+        #ipa_tensor = table[reverse_vocab[tensor]]
+        for x, value in np.ndenumerate(tensor):
+            ipa_tensor[x] = table[self.reverse_vocab[value]]
         return ipa_tensor
 
     def eval(self, sess, chars, vocab, text):
