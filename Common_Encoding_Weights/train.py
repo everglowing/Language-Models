@@ -126,6 +126,8 @@ def train(args):
                     feed[h] = state[i].h
                 train_loss, state, _ = sess.run([model.cost, model.final_state, model.train_op], feed)
                 end = time.time()
+                with open("graph.txt", "a") as myfile:
+                    myfile.write(str(e * data_loader.num_batches + b) + "," + train_loss + "\n")
                 print("{}/{} (epoch {}), train_loss = {:.3f}, time/batch = {:.3f}" \
                     .format(e * data_loader.num_batches + b,
                             args.num_epochs * data_loader.num_batches,
