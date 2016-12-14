@@ -87,7 +87,7 @@ class Model():
         state = sess.run(self.cell.zero_state(1, tf.float32))
         x = [vocab[c] if c in vocab else vocab['UNK'] for c in text]
         x = [vocab['<S>']] + x + [vocab['</S>']]
-        ipa_x = convert_ipa(x, vocab)
+        ipa_x = self.convert_ipa(x, vocab)
         total_len = len(x) - 1
         # pad x so the batch_size divides it
         while len(x) % 200 != 1:
