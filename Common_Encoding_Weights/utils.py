@@ -59,10 +59,10 @@ class TextLoader():
         self.vocab_size = len(self.chars)
         self.vocab = dict(zip(self.chars, range(len(self.chars))))
         self.reverse_vocab = dict(zip(range(len(self.chars)), self.chars))
-        self.ipa_tensor = np.copy(self.tensor)
         with open(vocab_file, 'wb') as f:
             cPickle.dump(self.chars, f)
         self.tensor = np.array(list(map(self.vocab.get, ['<S>'] + list(data) + ['</S>'])))
+        self.ipa_tensor = np.copy(self.tensor)
         np.save(tensor_file, self.tensor)
 
     def load_preprocessed(self, vocab_file, tensor_file):
