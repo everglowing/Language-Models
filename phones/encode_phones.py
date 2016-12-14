@@ -33,8 +33,10 @@ data2 = []
 while i < len(data):
 	c = data[i]
 	c2 = data[i:i+2]
-	if c2 in malayalam:
+	if c2 in malayalam and c2 not in data2:
 		data2.append(malayalam)
+		i+=2
+	elif c2 in malayalam:
 		i+=2
 	else:
 		i+=1
