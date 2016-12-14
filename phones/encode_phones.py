@@ -29,12 +29,13 @@ for k, v in malayalam.iteritems():
 extra = []
 
 i=0
-counter = 0
+counter = []
 while i < len(data):
 	c = data[i]
 	c2 = data[i:i+2]
 	if c2 in malayalam:
-		counter+=1
+		if c2 not in counter:
+			counter.append(c2)
 		i += 2
 	else:
 		i += 1
