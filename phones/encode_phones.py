@@ -28,6 +28,7 @@ for k, v in malayalam.iteritems():
 
 extra = []
 
+i=0
 while i < len(data):
 	c = data[i]
 	c2 = data[i:i+2]
