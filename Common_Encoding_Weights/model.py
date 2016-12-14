@@ -79,7 +79,7 @@ class Model():
         table['UNK'] = vocab_size + 6
         ipa_tensor = tensor[:]
         #ipa_tensor = table[reverse_vocab[tensor]]
-        for x, value in np.ndenumerate(tensor):
+        for x, value in enumerate(tensor):
             ipa_tensor[x] = table[reverse_vocab[value]]
         return ipa_tensor
 
