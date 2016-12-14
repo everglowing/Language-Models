@@ -2,6 +2,7 @@ import tensorflow as tf
 from tensorflow.python.ops import rnn_cell
 from tensorflow.python.ops import seq2seq
 
+import codecs
 import numpy as np
 
 class Model():
