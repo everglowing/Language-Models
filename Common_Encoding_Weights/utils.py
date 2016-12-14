@@ -72,6 +72,7 @@ class TextLoader():
         self.vocab = dict(zip(self.chars, range(len(self.chars))))
         self.reverse_vocab = dict(zip(range(len(self.chars)), self.chars))
         self.tensor = np.load(tensor_file)
+        self.ipa_tensor = np.copy(self.tensor)
         self.num_batches = int(self.tensor.size / (self.batch_size *
                                                    self.seq_length))
 
