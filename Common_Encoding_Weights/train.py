@@ -112,7 +112,6 @@ def train(args):
         if args.init_weights is not None:
             weight_model_path = tf.train.get_checkpoint_state(args.init_weights).model_checkpoint_path
             saver2.restore(sess, weight_model_path)
-            print("Loaded weights from weights/ folder")
         for e in range(args.num_epochs):
             sess.run(tf.assign(model.lr, args.learning_rate * (args.decay_rate ** e)))
             data_loader.reset_batch_pointer()
@@ -127,7 +126,7 @@ def train(args):
                 train_loss, state, _ = sess.run([model.cost, model.final_state, model.train_op], feed)
                 end = time.time()
                 with open("graph.txt", "a") as myfile:
-                    myfile.write(str(e * data_loader.num_batches + b) + "," + train_loss + "\n")
+                    myfile.write(str(e * data_loader.num_batches + b) + "," + str(train_loss) + "\n")
                 print("{}/{} (epoch {}), train_loss = {:.3f}, time/batch = {:.3f}" \
                     .format(e * data_loader.num_batches + b,
                             args.num_epochs * data_loader.num_batches,
