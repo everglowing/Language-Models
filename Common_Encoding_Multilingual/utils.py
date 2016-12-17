@@ -24,7 +24,6 @@ class TextLoader():
         else:
             print("loading preprocessed files")
             self.load_preprocessed(vocab_file, tensor_file)
-        self.find_target_chars()
         self.convert_ipa()
         self.create_batches()
         self.reset_batch_pointer()
