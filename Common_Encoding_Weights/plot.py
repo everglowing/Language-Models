@@ -3,7 +3,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from scipy.interpolate import spline
 import numpy as np
 
-def moving_average(a, n=100) :
+def moving_average(a, n=500):
     ret = np.cumsum(a, dtype=float)
     ret[n:] = ret[n:] - ret[:-n]
     return ret[n - 1:] / n
@@ -24,5 +24,5 @@ Y2 = moving_average(Y2)
 #fig = plt.figure()
 #ax = fig.add_subplot(111, projection='3d')
 #ax.contour(X, Y, Z)
-plt.plot(X,Y,X2,Y2, linewidth=2.0)
+plt.plot(X2,Y2,X,Y, linewidth=2.0)
 plt.show()
