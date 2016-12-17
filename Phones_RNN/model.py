@@ -97,7 +97,7 @@ class Model():
         while len(x) % 200 != 1:
             x.append(vocab[' '])
         ipa_x = self.convert_ipa(x, vocab)
-        y = np.array(x[1:]).reshape((-1, batch_size))
+        y = np.array(x[:-1]).reshape((-1, batch_size))
         ipa_x = np.array(ipa_x[:-1]).reshape((-1, batch_size))
         print "Data loaded"
         total_loss = 0.0
