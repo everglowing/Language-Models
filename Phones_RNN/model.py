@@ -51,17 +51,11 @@ class Model():
 
         output = tf.reshape(tf.concat(1, outputs), [-1, args.rnn_size])
         self.logits = tf.matmul(output, softmax_w) + softmax_b
-        loss_len = args.vocab_size
-
-        if evaluation:
-            self.logits = self.logits[:,:args.target_chars]
-            loss_len = args.target_chars
-
         self.probs = tf.nn.softmax(self.logits)
         self.loss = seq2seq.sequence_loss_by_example([self.logits],
                 [tf.reshape(self.targets, [-1])],
                 [tf.ones([args.batch_size * args.seq_length])],
-                loss_len)
+                args.vocab_size)
         self.cost = tf.reduce_sum(self.loss) / args.batch_size / args.seq_length
         self.lr = tf.Variable(0.0, trainable=False)
         tvars = tf.trainable_variables()
