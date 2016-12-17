@@ -31,9 +31,9 @@ class Model():
         self.targets = tf.placeholder(tf.int32, [args.batch_size, args.seq_length])
         self.initial_state = cell.zero_state(args.batch_size, tf.float32)
 
-        with tf.variable_scope('rnnlm'):
-            softmax_w = tf.get_variable("softmax_w", [args.rnn_size, args.vocab_size])
-            softmax_b = tf.get_variable("softmax_b", [args.vocab_size])
+        with tf.variable_scope('rnnlm_ipa'):
+            softmax_w = tf.get_variable("softmax_w", [args.rnn_size, args.ipa_vocab_size])
+            softmax_b = tf.get_variable("softmax_b", [args.ipa_vocab_size])
             with tf.device("/cpu:0"):
                 embedding = tf.get_variable("embedding", [args.ipa_vocab_size, args.rnn_size])
                 inputs = tf.nn.embedding_lookup(embedding, self.input_data)
@@ -41,7 +41,7 @@ class Model():
         outputs = []
         state = self.initial_state
 
-        with tf.variable_scope("RNN"):
+        with tf.variable_scope("RNN_ipa"):
             for time_step in range(args.seq_length):
                 if time_step > 0: tf.get_variable_scope().reuse_variables()
                 (cell_output, state) = cell(inputs[:, time_step, :], state)
@@ -51,11 +51,14 @@ class Model():
 
         output = tf.reshape(tf.concat(1, outputs), [-1, args.rnn_size])
         self.logits = tf.matmul(output, softmax_w) + softmax_b
+
+        loss_len = args.ipa_vocab_size
+
         self.probs = tf.nn.softmax(self.logits)
         self.loss = seq2seq.sequence_loss_by_example([self.logits],
                 [tf.reshape(self.targets, [-1])],
                 [tf.ones([args.batch_size * args.seq_length])],
-                args.vocab_size)
+                loss_len)
         self.cost = tf.reduce_sum(self.loss) / args.batch_size / args.seq_length
         self.lr = tf.Variable(0.0, trainable=False)
         tvars = tf.trainable_variables()
@@ -82,6 +85,7 @@ class Model():
         table['\n'] = vocab_size + 5
         table['UNK'] = vocab_size + 6
         ipa_tensor = tensor[:]
+        #ipa_tensor = table[reverse_vocab[tensor]]
         for x, value in enumerate(tensor):
             ipa_tensor[x] = table[reverse_vocab[value]]
         return ipa_tensor

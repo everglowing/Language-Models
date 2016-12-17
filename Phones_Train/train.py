@@ -61,7 +61,7 @@ def train(args):
     data_loader = TextLoader(args.data_dir, args.batch_size, args.seq_length, args.ipa_file)
     args.vocab_size = data_loader.vocab_size
     args.ipa_vocab_size = data_loader.ipa_vocab_size
-    
+    args.target_chars = data_loader.target_chars
     # check compatibility if training is continued from previously saved model
     if args.init_from is not None:
         # check if all necessary files exist 

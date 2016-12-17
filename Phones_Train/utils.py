@@ -1,6 +1,7 @@
 import codecs
 import os
 import collections
+import re
 from six.moves import cPickle
 import numpy as np
 
@@ -49,6 +50,22 @@ class TextLoader():
         for x, value in np.ndenumerate(self.tensor):
             self.ipa_tensor[x] = table[self.reverse_vocab[value]]
 
+    def rearrange_chars(self):
+        regex = ur"[\u0D00-\u0D7F\u002E]"
+        ml_chars = []
+        ta_chars = []
+        for char in self.chars:
+            if re.search(regex, char) is not None:
+                ml_chars.append(char)
+            else:
+                if char == '\n' or char == ' ' or char == '<S>' or char == 'UNK' or \
+                   char == '</S>':
+                    ml_chars.append(char)
+                else:
+                    ta_chars.append(char)
+        self.target_chars = len(ml_chars)
+        self.chars = ml_chars + ta_chars
+
     def preprocess(self, input_file, vocab_file, tensor_file):
         with codecs.open(input_file, "r", encoding=self.encoding) as f:
             data = f.read()
@@ -57,6 +74,7 @@ class TextLoader():
         count_pairs = sorted(counter.items(), key=lambda x: -x[1])
         self.chars, _ = zip(*count_pairs)
         self.vocab_size = len(self.chars)
+        self.rearrange_chars()
         self.vocab = dict(zip(self.chars, range(len(self.chars))))
         self.reverse_vocab = dict(zip(range(len(self.chars)), self.chars))
         with open(vocab_file, 'wb') as f:
@@ -89,7 +107,6 @@ class TextLoader():
         xdata = self.ipa_tensor
         ydata = np.copy(self.ipa_tensor)
         ydata[:-1] = xdata[1:]
-        ydata[-1] = xdata[0]
         self.x_batches = np.split(xdata.reshape(self.batch_size, -1), self.num_batches, 1)
         self.y_batches = np.split(ydata.reshape(self.batch_size, -1), self.num_batches, 1)
 
