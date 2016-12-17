@@ -50,14 +50,21 @@ class TextLoader():
         for x, value in np.ndenumerate(self.tensor):
             self.ipa_tensor[x] = table[self.reverse_vocab[value]]
 
-    def rearrange_chars():
-        regex = ur"[^\u0D00-\u0D7F\u002E]"
+    def rearrange_chars(self):
+        regex = ur"[\u0D00-\u0D7F\u002E]"
         ml_chars = []
         ta_chars = []
         for char in self.chars:
-            print re.search(regex, char)
-        import pdb
-        pdb.set_trace()
+            if re.search(regex, char) is not None:
+                ml_chars.append(char)
+            else:
+                if char == '\n' or char == ' ' or char == '<S>' or char == 'UNK' or \
+                   char == '</S>':
+                    ml_chars.append(char)
+                else:
+                    ta_chars.append(char)
+        self.target_chars = len(ml_chars)
+        self.chars = ml_chars + ta_chars
 
     def preprocess(self, input_file, vocab_file, tensor_file):
         with codecs.open(input_file, "r", encoding=self.encoding) as f:

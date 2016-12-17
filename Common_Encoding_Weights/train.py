@@ -103,8 +103,7 @@ def train(args):
                 continue
             if not var.name.startswith("rnnlm/softmax"):
                 list_vars.append(var)
-        for var in list_vars:
-            print(var.name)
+
         saver2 = tf.train.Saver(list_vars)
         # restore model
         if args.init_from is not None:
@@ -112,6 +111,7 @@ def train(args):
         if args.init_weights is not None:
             weight_model_path = tf.train.get_checkpoint_state(args.init_weights).model_checkpoint_path
             saver2.restore(sess, weight_model_path)
+            print("Loaded weights")
         for e in range(args.num_epochs):
             sess.run(tf.assign(model.lr, args.learning_rate * (args.decay_rate ** e)))
             data_loader.reset_batch_pointer()
