@@ -1,5 +1,5 @@
 # Set of text processing APIs used in all models
-from .error import NoBatchError
+from .errors import NoBatchError
 from .strings import ERRORS
 
 import numpy as np
