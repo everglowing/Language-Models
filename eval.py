@@ -5,6 +5,7 @@ import tensorflow as tf
 
 import argparse
 import codecs
+import importlib
 import os
 import utils.processors as processors
 
@@ -16,19 +17,20 @@ from utils.batches import BatchLoader
 from utils.errors import ModelNotFound
 from utils.strings import ERRORS, LOGS, FILES
 from utils.textloader import TextLoader
-from model import Model
 
 def main():
     args = eval_parser.parse_args()
     eval(args)
 
 def eval(args):
-    model_config = models[saved_args.model]
-    # used to process input text
-    eval_processor = getattr(processors, model_config["eval_processor"])
     # Get saved args from trained model
     with open(os.path.join(args.save_dir, FILES[2]), 'rb') as f:
         saved_args = cPickle.load(f)
+
+    model_config = models[saved_args.model]
+    # used to process input text
+    eval_processor = getattr(processors, model_config["eval_processor"])
+    Model = getattr(importlib.import_module(model_config["module"]), "Model")
     # For evaluation, batch size has to be 1
     saved_args.batch_size = 1
     saved_args.seq_length = args.seq_length
