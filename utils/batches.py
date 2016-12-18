@@ -8,7 +8,7 @@ class BatchLoader(object):
     def __init__(self, input_seq, gen_output, batch_size, seq_length, extra_data=None):
         self.seq_length = seq_length
         self.batch_size = batch_size
-        self.num_batches = int(self.xdata.size / (self.batch_size * self.seq_length))
+        self.num_batches = int(input_seq.size / (self.batch_size * self.seq_length))
         # When the data (tensor) is too small
         if self.num_batches == 0:
             raise NoBatchError(ERRORS[0])

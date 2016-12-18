@@ -2,7 +2,15 @@
 
 ERRORS = {
     0: "Not enough data. Make seq_length and batch_size small.",
-    1: "Input file not found at path {path}"
+    1: "Input file not found at path {path}",
+    2: "{init} must be a a path",
+    3: "config.pkl file does not exist in path {init}",
+    4: "chars_vocab.pkl.pkl file does not exist in path {init}",
+    5: "No checkpoint found",
+    6: "No model path found in checkpoint",
+    7: "Command line argument and saved model disagree on '{arg}'",
+    8: "Data and loaded model disagree on dictionary mappings!",
+    
 }
 
 LOGS = {
