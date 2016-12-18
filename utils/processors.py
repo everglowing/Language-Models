@@ -1,5 +1,6 @@
 # List of text processor utilities
 import collections
+import numpy as np
 
 def default_process(data):
     counter = collections.Counter(data)
