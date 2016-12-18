@@ -6,9 +6,9 @@ from tensorflow.python.ops import seq2seq
 import numpy as np
 
 class Model():
-    def __init__(self, args, infer=False, evaluation=False):
+    def __init__(self, args, sample=False, evaluation=False):
         self.args = args
-        if infer:
+        if sample:
             args.batch_size = 1
             args.seq_length = 1
         if args.cell == 'rnn':
@@ -85,36 +85,6 @@ class Model():
                 args.grad_clip)
         optimizer = tf.train.AdamOptimizer(self.lr)
         self.train_op = optimizer.apply_gradients(zip(grads, tvars))
-
-    def eval(self, sess, chars, vocab, text):
-        batch_size = 200
-        state = sess.run(self.cell.zero_state(1, tf.float32))
-        x = [vocab[c] if c in vocab else vocab['UNK'] for c in text]
-        x = [vocab['<S>']] + x + [vocab['</S>']]
-        total_len = len(x) - 1
-        # pad x so the batch_size divides it
-        while len(x) % 200 != 1:
-            x.append(vocab[' '])
-        y = np.array(x[1:]).reshape((-1, batch_size))
-        x = np.array(x[:-1]).reshape((-1, batch_size))
-
-        prep_array = vocab[' ']*np.ones([self.args.back_steps-1])
-        x1 = []
-        for i in range(0, len(x)):
-            x1.append(np.concatenate((prep_array, x[i])))
-            prep_array = x[i][-1*(self.args.back_steps-1):]
-        x = np.array(x1)
-
-        total_loss = 0.0
-        for i in range(x.shape[0]):
-            feed = {self.input_data: x[i:i+1, :], self.targets: y[i:i+1, :],
-                    self.initial_state: state}
-            [state, loss] = sess.run([self.last_state, self.loss], feed)
-            total_loss += loss.sum()
-        # need to subtract off loss from padding tokens
-        total_loss -= loss[total_len % batch_size - batch_size:].sum()
-        avg_entropy = total_loss / len(text)
-        return np.exp(avg_entropy)  # this is the perplexity
 
     def sample(self, sess, chars, vocab, num=200, prime='The ', sampling_type=1):
         state = sess.run(self.cell.zero_state(1, tf.float32))

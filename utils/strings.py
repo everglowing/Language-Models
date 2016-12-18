@@ -10,7 +10,7 @@ ERRORS = {
     6: "No model path found in checkpoint",
     7: "Command line argument and saved model disagree on '{arg}'",
     8: "Data and loaded model disagree on dictionary mappings!",
-
+    9: "Training model not found for evaluation"
 }
 
 LOGS = {

@@ -6,4 +6,5 @@ class NoBatchError(Exception):
 class FileNotFound(Exception):
     pass
 
-
+class ModelNotFound(Exception):
+    pass
