@@ -64,6 +64,9 @@ def train(args):
     with open(os.path.join(args.save_dir, FILES[4]), 'wb') as f:
         summary = model_config["summary"] + "\n" + json.dumps(args.__dict__)
         f.write(summary)
+    # Empty plotting file
+    with open(os.path.join(args.save_dir, FILES[5]), 'wb') as f:
+        f.write("")
 
     model = Model(args)
 
@@ -79,10 +82,6 @@ def train(args):
         plot_data = ""
         for e in range(args.num_epochs):
             run_epoch(sess, model, saver, args, batch_loader, e, plot_data)
-
-        # Plot loss vs batches on training data
-        with open(os.path.join(args.save_dir, FILES[5]), 'wb') as f:
-            f.write(plot_data)
 
 def run_epoch(sess, model, saver, args, batch_loader, e, plot_data):
     # Start off by tuning the correct learning rate for the epoch
@@ -115,6 +114,10 @@ def run_epoch(sess, model, saver, args, batch_loader, e, plot_data):
             checkpoint_path = os.path.join(args.save_dir, 'model.ckpt')
             saver.save(sess, checkpoint_path, global_step=batch_num)
             print(LOGS[3].format(checkpoint_path))
+            # Plot loss vs batches on training data
+            with open(os.path.join(args.save_dir, FILES[5]), 'a') as f:
+                f.write(plot_data)
+                plot_data = ""
 
 
 def check_init_from(init="", ckpt=None):
