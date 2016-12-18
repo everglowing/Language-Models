@@ -6,6 +6,7 @@ models = {
         "generator": "partial_brnn",
         "processor": "default_process",
         "extra_args": ["seq_length", "back_steps"],
-        "data_loader": ["vocab"]
+        "data_loader": ["vocab"],
+        "summary": ""
     }
 }

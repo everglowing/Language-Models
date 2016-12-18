@@ -22,6 +22,10 @@ LOGS = {
 
 FILES = {
     0: "vocab.pkl",
-    1: "data.npy"
+    1: "data.npy",
+    2: "config.pkl",
+    3: "chars_vocab.pkl",
+    4: "args_summary.txt",
+    5: "plot_data.csv"
 }
 

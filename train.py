@@ -6,7 +6,7 @@ from config.models import models
 from config.arguments import parser
 from utils.textloader import TextLoader
 from utils.batches import BatchLoader
-from utils.strings import ERRORS, LOGS
+from utils.strings import ERRORS, LOGS, FILES
 
 import utils.generators as generators
 import utils.processors as processors
@@ -15,6 +15,7 @@ import numpy as np
 import tensorflow as tf
 
 import importlib
+import json
 import os
 import time
 
@@ -46,19 +47,23 @@ def train(args):
         check_init_from(init=args.init_from, ckpt=ckpt)
 
         # open old config and check if models are compatible
-        with open(os.path.join(args.init_from, 'config.pkl')) as f:
+        with open(os.path.join(args.init_from, FILES[2])) as f:
             saved_model_args = cPickle.load(f)
         check_saved_args(saved_model_args, args)
 
         # open saved vocab/dict and check if vocabs/dicts are compatible
-        with open(os.path.join(args.init_from, 'chars_vocab.pkl')) as f:
+        with open(os.path.join(args.init_from, FILES[3])) as f:
             saved_vocab = cPickle.load(f)
-        assert saved_vocab==data_loader.vocab, ERRORS[8]
+        assert saved_vocab == data_loader.vocab, ERRORS[8]
 
-    with open(os.path.join(args.save_dir, 'config.pkl'), 'wb') as f:
+    with open(os.path.join(args.save_dir, FILES[2]), 'wb') as f:
         cPickle.dump(args, f)
-    with open(os.path.join(args.save_dir, 'chars_vocab.pkl'), 'wb') as f:
+    with open(os.path.join(args.save_dir, FILES[3]), 'wb') as f:
         cPickle.dump(data_loader.vocab, f)
+    # Writing a textual summary of the model being used
+    with open(os.path.join(args.save_dir, FILES[4]), 'wb') as f:
+        summary = model_config["summary"] + "\n" + json.dumps(args.__dict__)
+        f.write(summary)
 
     model = Model(args)
 
@@ -71,10 +76,15 @@ def train(args):
             saver.restore(sess, ckpt.model_checkpoint_path)
 
         # Actual training starts now
+        plot_data = ""
         for e in range(args.num_epochs):
-            run_epoch(sess, model, saver, args, batch_loader, e)
+            run_epoch(sess, model, saver, args, batch_loader, e, plot_data)
 
-def run_epoch(sess, model, saver, args, batch_loader, e):
+        # Plot loss vs batches on training data
+        with open(os.path.join(args.save_dir, FILES[5]), 'wb') as f:
+            f.write(plot_data)
+
+def run_epoch(sess, model, saver, args, batch_loader, e, plot_data):
     # Start off by tuning the correct learning rate for the epoch
     sess.run(tf.assign(model.lr, args.learning_rate * (args.decay_rate ** e)))
     # Reset batch pointer back to zero
@@ -96,6 +106,9 @@ def run_epoch(sess, model, saver, args, batch_loader, e):
         total_num = args.num_epochs * batch_loader.num_batches
         print(LOGS[2].format(batch_num, total_num, e, train_loss, end - start))
 
+        # Append the string plot_data to see trends
+        plot_data += str(batch_num) + "," + str(train_loss) + "\n"
+
         # Save after `args.save_every` batches or at the very end
         if batch_num % args.save_every == 0 or \
            (e == args.num_epochs-1 and b == batch_loader.num_batches-1):
@@ -106,8 +119,8 @@ def run_epoch(sess, model, saver, args, batch_loader, e):
 
 def check_init_from(init="", ckpt=None):
     assert os.path.isdir(args.init_from), ERRORS[2].format(init=init)
-    assert os.path.isfile(os.path.join(args.init_from,"config.pkl")), ERRORS[3].format(init=init)
-    assert os.path.isfile(os.path.join(args.init_from,"chars_vocab.pkl")), ERRORS[4].format(init)
+    assert os.path.isfile(os.path.join(args.init_from, FILES[2])), ERRORS[3].format(init=init)
+    assert os.path.isfile(os.path.join(args.init_from, FILES[3])), ERRORS[4].format(init)
     assert ckpt, ERRORS[5]
     assert ckpt.model_checkpoint_path, ERRORS[6]
 
