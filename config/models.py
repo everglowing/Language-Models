@@ -3,7 +3,9 @@
 models = {
     "partial_brnn": {
         "module": "partial_brnn.model",
-        "generator": "next_char_char",
-        "processor": "default_process"
+        "generator": "partial_brnn",
+        "processor": "default_process",
+        "extra_args": ["seq_length", "back_steps"],
+        "data_loader": ["vocab"]
     }
 }

@@ -6,7 +6,7 @@ from config.models import models
 from config.arguments import parser
 from utils.textloader import TextLoader
 from utils.batches import BatchLoader
-from utils.strings import ERRORS
+from utils.strings import ERRORS, LOGS
 
 import utils.generators as generators
 import utils.processors as processors
@@ -30,10 +30,12 @@ def train(args):
 
     data_loader = TextLoader(data_dir=args.data_dir,
                              processor=processor)
+    extra_data = build_extra_data(model_config, args, data_loader)
     batch_loader = BatchLoader(input_seq=data_loader.data,
-                               gen_output=generator,
+                               generator=generator,
                                batch_size=args.batch_size,
-                               seq_length=args.seq_length)
+                               seq_length=args.seq_length,
+                               extra_data=extra_data)
 
     args.vocab_size = data_loader.vocab_size
 
@@ -67,33 +69,45 @@ def train(args):
         # restore model
         if args.init_from is not None:
             saver.restore(sess, ckpt.model_checkpoint_path)
+
+        # Actual training starts now
         for e in range(args.num_epochs):
-            sess.run(tf.assign(model.lr, args.learning_rate * (args.decay_rate ** e)))
-            data_loader.reset_batch_pointer()
-            state = sess.run(model.initial_state)
-            for b in range(data_loader.num_batches):
-                start = time.time()
-                x, y = data_loader.next_batch()
-                if b == 0:
-                    feed = {model.input_data: x, model.targets: y}
-                else:
-                    feed = {model.input_data: x, model.targets: y, model.initial_state: state}
-                train_loss, state, _ = sess.run([model.cost, model.last_state, model.train_op], feed)
-                end = time.time()
-                print("{}/{} (epoch {}), train_loss = {:.3f}, time/batch = {:.3f}" \
-                    .format(e * data_loader.num_batches + b,
-                            args.num_epochs * data_loader.num_batches,
-                            e, train_loss, end - start))
-                if (e * data_loader.num_batches + b) % args.save_every == 0\
-                    or (e==args.num_epochs-1 and b == data_loader.num_batches-1): # save for the last result
-                    checkpoint_path = os.path.join(args.save_dir, 'model.ckpt')
-                    saver.save(sess, checkpoint_path, global_step = e * data_loader.num_batches + b)
-                    print("model saved to {}".format(checkpoint_path))
+            run_epoch(sess, model, saver, args, batch_loader, e)
+
+def run_epoch(sess, model, saver, args, batch_loader, e):
+    # Start off by tuning the correct learning rate for the epoch
+    sess.run(tf.assign(model.lr, args.learning_rate * (args.decay_rate ** e)))
+    # Reset batch pointer back to zero
+    batch_loader.reset_batch_pointer()
+    # Start from an empty RNN state
+    state = sess.run(model.initial_state)
+    for b in range(batch_loader.num_batches):
+        start = time.time()
+        x, y = batch_loader.next_batch()
+        if b == 0:
+            feed = {model.input_data: x, model.targets: y}
+        else:
+            # Feed previous state if it's not the first batch
+            feed = {model.input_data: x, model.targets: y, model.initial_state: state}
+        train_loss, state, _ = sess.run([model.cost, model.last_state, model.train_op], feed)
+        end = time.time()
+        # print the result so far on terminal
+        batch_num = e * batch_loader.num_batches + b
+        total_num = args.num_epochs * batch_loader.num_batches
+        print(LOGS[2].format(batch_num, total_num, e, train_loss, end - start))
+
+        # Save after `args.save_every` batches or at the very end
+        if batch_num % args.save_every == 0 or \
+           (e == args.num_epochs-1 and b == batch_loader.num_batches-1):
+            checkpoint_path = os.path.join(args.save_dir, 'model.ckpt')
+            saver.save(sess, checkpoint_path, global_step=batch_num)
+            print(LOGS[3].format(checkpoint_path))
+
 
 def check_init_from(init="", ckpt=None):
     assert os.path.isdir(args.init_from), ERRORS[2].format(init=init)
     assert os.path.isfile(os.path.join(args.init_from,"config.pkl")), ERRORS[3].format(init=init)
-    assert os.path.isfile(os.path.join(args.init_from,"chars_vocab.pkl")), ERRORS[4].format(init=init)
+    assert os.path.isfile(os.path.join(args.init_from,"chars_vocab.pkl")), ERRORS[4].format(init)
     assert ckpt, ERRORS[5]
     assert ckpt.model_checkpoint_path, ERRORS[6]
 
@@ -102,6 +116,13 @@ def check_saved_args(saved_model_args, args):
     for arg in need_be_same:
         assert vars(saved_model_args)[arg]==vars(args)[arg], ERRORS[7].format(arg=arg)
 
+def build_extra_data(model_config, args, data_loader):
+    extra_data = {}
+    for arg in model_config["extra_args"]:
+        extra_data[arg] = getattr(args, arg)
+    for d in model_config["data_loader"]:
+        extra_data[d] = getattr(data_loader, d)
+    return extra_data
 
 if __name__ == '__main__':
     main()

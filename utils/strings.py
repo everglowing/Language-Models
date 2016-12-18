@@ -5,17 +5,19 @@ ERRORS = {
     1: "Input file not found at path {path}",
     2: "{init} must be a a path",
     3: "config.pkl file does not exist in path {init}",
-    4: "chars_vocab.pkl.pkl file does not exist in path {init}",
+    4: "chars_vocab.pkl file does not exist in path {}",
     5: "No checkpoint found",
     6: "No model path found in checkpoint",
     7: "Command line argument and saved model disagree on '{arg}'",
     8: "Data and loaded model disagree on dictionary mappings!",
-    
+
 }
 
 LOGS = {
     0: "Reading text file..",
-    1: "Reading pre-processed data.."
+    1: "Reading pre-processed data..",
+    2: "{}/{} (epoch {}), train_loss = {:.3f}, time/batch = {:.3f}",
+    3: "model saved to {}",
 }
 
 FILES = {
