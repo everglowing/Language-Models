@@ -80,16 +80,21 @@ def train(args):
         writer = tf.train.SummaryWriter("logs", sess.graph)
         tf.initialize_all_variables().run()
         saver = tf.train.Saver(tf.all_variables())
+        saver2 = tf.train.Saver(build_variables(model_config["build_variables"]))
         # restore model
         if args.init_from is not None:
             saver.restore(sess, ckpt.model_checkpoint_path)
+        if args.init_weights is not None:
+            weight_model_path = tf.train.get_checkpoint_state(args.init_weights).model_checkpoint_path
+            saver2.restore(sess, weight_model_path)
+            print(LOGS[6])
 
         # Actual training starts now
         plot_data = ""
         for e in range(args.num_epochs):
-            run_epoch(sess, model, saver, args, batch_loader, e, plot_data)
+            run_epoch(sess, model, saver, saver2, args, batch_loader, e, plot_data)
 
-def run_epoch(sess, model, saver, args, batch_loader, e, plot_data):
+def run_epoch(sess, model, saver, saver2, args, batch_loader, e, plot_data):
     # Start off by tuning the correct learning rate for the epoch
     sess.run(tf.assign(model.lr, args.learning_rate * (args.decay_rate ** e)))
     # Reset batch pointer back to zero
@@ -118,7 +123,9 @@ def run_epoch(sess, model, saver, args, batch_loader, e, plot_data):
         if batch_num % args.save_every == 0 or \
            (e == args.num_epochs-1 and b == batch_loader.num_batches-1):
             checkpoint_path = os.path.join(args.save_dir, 'model.ckpt')
+            weights_path = os.path.join(args.weights_dir, 'model_weights.ckpt')
             saver.save(sess, checkpoint_path, global_step=batch_num)
+            saver2.save(sess, weights_path, global_step=batch_num)
             print(LOGS[3].format(checkpoint_path))
             # Plot loss vs batches on training data
             with open(os.path.join(args.save_dir, FILES[5]), 'a') as f:
@@ -145,6 +152,17 @@ def build_extra_data(model_config, args, data_loader):
     for d in model_config["data_loader"]:
         extra_data[d] = getattr(data_loader, d)
     return extra_data
+
+def build_variables(build_vars):
+    var_list = []
+    for var in tf.all_variables():
+        if var.name.startswith(build_vars):
+            var_list.append(var)
+    # empty list indicates whole model
+    if len(var_list) == 0:
+        var_list = tf.all_variables()
+    return var_list
+
 
 if __name__ == '__main__':
     main()

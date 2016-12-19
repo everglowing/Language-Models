@@ -12,6 +12,7 @@ models = {
             }
         },
         "processor": "default_process",
+        "build_variables": (),
         "eval_processor": {
             "function": "partial_brnn",
             "extra": {
@@ -31,6 +32,7 @@ models = {
             }
         },
         "processor": "default_process",
+        "build_variables": (),
         "eval_processor":{
             "function": "brnn_gap",
             "extra": {
@@ -50,6 +52,7 @@ models = {
             }
         },
         "processor": "ipa_process",
+        "build_variables": (),
         "eval_processor":{
             "function": "phones_rnn",
             "extra": {
@@ -69,6 +72,7 @@ models = {
             }
         },
         "processor": "ipa_process",
+        "build_variables": (),
         "eval_processor":{
             "function": "phone_to_phone",
             "extra": {

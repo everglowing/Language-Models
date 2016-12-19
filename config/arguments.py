@@ -6,6 +6,8 @@ parser.add_argument('--data_dir', type=str, default='data',
                    help='data directory containing input.txt')
 parser.add_argument('--save_dir', type=str, default='save',
                    help='directory to store checkpointed models')
+parser.add_argument('--weights_dir', type=str, default='weights',
+                   help='directory to store weights of RNN cell')
 parser.add_argument('--rnn_size', type=int, default=128,
                    help='size of RNN hidden state')
 parser.add_argument('--num_layers', type=int, default=2,
@@ -30,6 +32,8 @@ parser.add_argument('--learning_rate', type=float, default=0.002,
                    help='learning rate')
 parser.add_argument('--decay_rate', type=float, default=0.97,
                    help='decay rate for rmsprop')
+parser.add_argument('--init_weights', type=str, default=None,
+                   help='directory to initialize weights from')
 parser.add_argument('--init_from', type=str, default=None,
                    help="""continue training from saved model at this path. Path must contain files saved by previous training process: 
                         'config.pkl'        : configuration;

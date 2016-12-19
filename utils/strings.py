@@ -19,7 +19,8 @@ LOGS = {
     2: "{}/{} (epoch {}), train_loss = {:.3f}, time/batch = {:.3f}",
     3: "model saved to {}",
     4: "Evaluation data loaded.",
-    5: "Batch {} of {}"
+    5: "Batch {} of {}",
+    6: "Loaded weights from weights/ folder"
 }
 
 FILES = {
