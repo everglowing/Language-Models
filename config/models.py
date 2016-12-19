@@ -38,7 +38,7 @@ models = {
             }
         },
         "summary": "A complete BRNN which doesn't see the next element, and hence can be used as a character predictor."
-    }
+    },
     "phones_rnn": {
         "module": "models.phones_rnn.model",
         # used to generate batches from the tensor
