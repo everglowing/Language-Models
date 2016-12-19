@@ -6,9 +6,9 @@ from tensorflow.python.ops import seq2seq
 import numpy as np
 
 class Model():
-    def __init__(self, args, sample=False, evaluation=False):
+    def __init__(self, args, infer=False, evaluation=False):
         self.args = args
-        if sample:
+        if infer:
             args.batch_size = 1
             args.seq_length = 1
         if args.cell == 'rnn':
