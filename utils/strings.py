@@ -28,7 +28,7 @@ FILES = {
     3: "chars_vocab.pkl",
     4: "args_summary.txt",
     5: "plot_data.csv",
-    6: "final_encoding.txt",
+    6: "utils/final_encoding.txt",
     7: "ipa_vocab.pkl",
     8: "ipa_data.npy"
 }

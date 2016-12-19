@@ -12,14 +12,14 @@ class Model():
             args.batch_size = 1
             args.seq_length = 1
 
-        if args.model == 'rnn':
+        if args.cell == 'rnn':
             cell_fn = rnn_cell.BasicRNNCell
-        elif args.model == 'gru':
+        elif args.cell == 'gru':
             cell_fn = rnn_cell.GRUCell
-        elif args.model == 'lstm':
+        elif args.cell == 'lstm':
             cell_fn = rnn_cell.BasicLSTMCell
         else:
-            raise Exception("model type not supported: {}".format(args.model))
+            raise Exception("cell type not supported: {}".format(args.cell))
 
         cell = cell_fn(args.rnn_size, state_is_tuple=True)
         self.cell = cell = rnn_cell.MultiRNNCell([cell] * args.num_layers, state_is_tuple=True)
@@ -46,7 +46,7 @@ class Model():
                 if time_step > 0: tf.get_variable_scope().reuse_variables()
                 (cell_output, state) = cell(inputs[:, time_step, :], state)
                 if time_step == args.seq_length - 1:
-                    self.final_state = state
+                    self.last_state = state
                 outputs.append(cell_output)
 
         output = tf.reshape(tf.concat(1, outputs), [-1, args.rnn_size])

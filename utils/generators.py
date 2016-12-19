@@ -38,8 +38,8 @@ def partial_brnn(xdata, batch_size, num_batches, extra_data=None):
 def phones_rnn(xdata, batch_size, num_batches, extra_data=None):
     ydata = np.copy(xdata)
     new_x = extra_data["ipa_data"]
-    self.x_batches = np.split(new_x.reshape(batch_size, -1), num_batches, 1)
-    self.y_batches = np.split(ydata.reshape(batch_size, -1), num_batches, 1)
+    x_batches = np.split(new_x.reshape(batch_size, -1), num_batches, 1)
+    y_batches = np.split(ydata.reshape(batch_size, -1), num_batches, 1)
     return x_batches, y_batches
 
 def next_char_char(xdata, batch_size, num_batches, extra_data=None):
