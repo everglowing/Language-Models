@@ -40,6 +40,7 @@ def train(args):
 
     args.vocab_size = data_loader.vocab_size
     args.ipa_vocab_size = data_loader.ipa_vocab_size
+    args.splits = data_loader.splits
 
     # check compatibility if training is continued from previously saved model
     if args.init_from is not None:

@@ -32,6 +32,7 @@ FILES = {
     5: "plot_data.csv",
     6: "utils/final_encoding.txt",
     7: "ipa_vocab.pkl",
-    8: "ipa_data.npy"
+    8: "ipa_data.npy",
+    9: "vocab_splits.pkl"
 }
 

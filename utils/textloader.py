@@ -21,10 +21,12 @@ class TextLoader(object):
         self.data_file = data_file = os.path.join(data_dir, FILES[1])
         self.ipa_vocab_file = ipa_vocab_file = os.path.join(data_dir, FILES[7])
         self.ipa_data_file = ipa_data_file = os.path.join(data_dir, FILES[8])
+        self.splits_file = splits_file = os.path.join(data_dir, FILES[9])
         self.encoding = encoding
         if check_saved and \
            (os.path.exists(vocab_file) and os.path.exists(data_file) and \
-            os.path.exists(ipa_vocab_file) and os.path.exists(ipa_data_file)):
+            os.path.exists(ipa_vocab_file) and os.path.exists(ipa_data_file) and \
+            os.path.exists(splits_file)):
             print(LOGS[1])
             self.load_processed()
             # No need to re-save processed data
@@ -36,7 +38,7 @@ class TextLoader(object):
             with codecs.open(input_file, "r", encoding=encoding) as f:
                 data = f.read()
 
-            self.vocab, self.ipa_vocab = processor(data)
+            self.vocab, self.ipa_vocab, self.splits = processor(data)
             self.vocab_size = len(self.vocab)
             self.ipa_vocab_size = len(self.ipa_vocab)
             self.data = np.array(list(map(self.vocab.get, ['<S>'] + list(data) + ['</S>'])))
@@ -52,6 +54,8 @@ class TextLoader(object):
             self.vocab = cPickle.load(f)
         with open(self.ipa_vocab_file, 'rb') as f:
             self.ipa_vocab = cPickle.load(f)
+        with open(self.splits_file, 'rb') as f:
+            self.splits = cPickle.load(f)
         self.vocab_size = len(self.vocab)
         self.ipa_vocab_size = len(self.ipa_vocab)
         self.data = np.load(self.data_file)
@@ -64,3 +68,5 @@ class TextLoader(object):
             cPickle.dump(self.vocab, f)
         with open(self.ipa_vocab_file, 'wb') as f:
             cPickle.dump(self.ipa_vocab, f)
+        with open(self.splits_file, 'wb') as f:
+            cPickle.dump(self.splits, f)

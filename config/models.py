@@ -101,4 +101,24 @@ models = {
         },
         "summary": "An RNN used to learn the mapping between phones and next character"
     },
+    "phone_char_multi": {
+        "module": "models.phone_char_multi.model",
+        # used to generate batches from the tensor
+        "generator": {
+            "function": "phone_to_char",
+            "extra": {
+                "extra_args": [],
+                "data_loader": ["ipa_data"],
+            }
+        },
+        "processor": "ipa_process_ordered",
+        "build_variables": ("RNN", "beta", "rnnlm/embedding"),
+        "eval_processor":{
+            "function": "phone_to_char",
+            "extra": {
+                "extra_args": []
+            }
+        },
+        "summary": "An RNN used to learn the mapping between phones and next character, trained on multiple languages together. Hence it requires vocab ordering"
+    },
 }

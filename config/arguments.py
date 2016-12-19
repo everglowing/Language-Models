@@ -50,6 +50,7 @@ c_parser = subparsers.add_parser("phones_rnn")
 d_parser = subparsers.add_parser("phone_to_phone")
 e_parser = subparsers.add_parser("char_to_char")
 f_parser = subparsers.add_parser("phone_to_char")
+g_parser = subparsers.add_parser("phone_char_multi")
 
 a_parser.add_argument('--back_steps', type=int, default=5,
                      help='Number of steps in BRNN')

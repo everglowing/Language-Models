@@ -25,13 +25,31 @@ def generate_ipa(ipa_file=FILES[6]):
     vocab_size += 7
     return ipa_vocab
 
+def rearrange_chars(chars):
+    regex = ur"[\u0D00-\u0D7F\u002E]"
+    ml_chars = []
+    ta_chars = []
+    for char in chars:
+        if re.search(regex, char) is not None:
+            ml_chars.append(char)
+        else:
+            if char == '\n' or char == ' ' or char == '<S>' or char == 'UNK' or \
+               char == '</S>':
+                ml_chars.append(char)
+            else:
+                ta_chars.append(char)
+    chars_split = len(ml_chars)
+    chars = ml_chars + ta_chars
+    return chars, chars_split
+
+# Text processors
 def default_process(data):
     counter = collections.Counter(data)
     counter.update(('<S>', '</S>', 'UNK'))  # add tokens for start end and unk
     count_pairs = sorted(counter.items(), key=lambda x: -x[1])
     chars, _ = zip(*count_pairs)
     vocab = dict(zip(chars, range(len(chars))))
-    return vocab, {}
+    return vocab, {}, [len(vocab)]
 
 def ipa_process(data):
     counter = collections.Counter(data)
@@ -40,7 +58,17 @@ def ipa_process(data):
     chars, _ = zip(*count_pairs)
     vocab = dict(zip(chars, range(len(chars))))
     ipa_vocab = generate_ipa()
-    return vocab, ipa_vocab
+    return vocab, ipa_vocab, [len(vocab)]
+
+def ipa_process_ordered(data):
+    counter = collections.Counter(data)
+    counter.update(('<S>', '</S>', 'UNK'))  # add tokens for start end and unk
+    count_pairs = sorted(counter.items(), key=lambda x: -x[1])
+    chars, _ = zip(*count_pairs)
+    chars, chars_split  = rearrange_chars(chars)
+    vocab = dict(zip(chars, range(len(chars))))
+    ipa_vocab = generate_ipa()
+    return vocab, ipa_vocab, [chars_split, len(vocab)]
 
 # Evaluation processors
 def partial_brnn(text, vocab, ipa_vocab, seq_length, extra_data=None):
