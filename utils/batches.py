@@ -13,6 +13,9 @@ class BatchLoader(object):
         if self.num_batches == 0:
             raise NoBatchError(ERRORS[0])
         xdata = input_seq[:self.num_batches * self.batch_size * self.seq_length]
+        # Hardcoded here for now, all the IPA related logic
+        if "ipa_data" in extra_data:
+            extra_data["ipa_data"] = extra_data[:self.num_batches * self.batch_size * self.seq_length]
         # output generated from the `gen_output` function passed into BatchLoader
         self.x_batches, self.y_batches = generator(xdata, batch_size, num_batches, extra_data)
         self.pointer = 0

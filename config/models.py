@@ -18,7 +18,7 @@ models = {
                 "extra_args": ["back_steps"]
             }
         },
-        "summary": ""
+        "summary": "A special BRNN architecture with fixed number of back steps for each timestep."
     },
     "brnn_gap": {
         "module": "models.brnn_gap.model",
@@ -37,6 +37,25 @@ models = {
                 "extra_args": []
             }
         },
-        "summary": ""
+        "summary": "A complete BRNN which doesn't see the next element, and hence can be used as a character predictor."
+    }
+    "phones_rnn": {
+        "module": "models.phones_rnn.model",
+        # used to generate batches from the tensor
+        "generator": {
+            "function": "phones_rnn",
+            "extra": {
+                "extra_args": [],
+                "data_loader": ["ipa_data"],
+            }
+        },
+        "processor": "ipa_process",
+        "eval_processor":{
+            "function": "phones_rnn",
+            "extra": {
+                "extra_args": []
+            }
+        },
+        "summary": "An RNN used to learn the mapping between phones and characters"
     }
 }

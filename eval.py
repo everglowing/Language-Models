@@ -37,6 +37,9 @@ def eval(args):
     # Vocab is needed to convert text to numbers
     with open(os.path.join(args.save_dir, FILES[3]), 'rb') as f:
         vocab = cPickle.load(f)
+    # ipa_vocab might be needed as well
+    with open(os.path.join(args.save_dir, FILES[7]), 'rb') as f:
+        ipa_vocab = cPickle.load(f)
     model = Model(saved_args, sample=False, evaluation=True)
 
     with codecs.open(args.text, 'r', encoding='utf-8') as f:
@@ -52,12 +55,12 @@ def eval(args):
             raise ModelNotFound(ERRORS[9])
         # calculate perplexity
         eval_extra = model_config["eval_processor"]["extra"]
-        ppl = perplexity(sess, model, eval_extra, saved_args, text, vocab, eval_processor)
+        ppl = perplexity(sess, model, eval_extra, saved_args, text, vocab, ipa_vocab, eval_processor)
         print('perplexity: {0}'.format(ppl))
 
-def perplexity(sess, model, model_config, saved_args, text, vocab, eval_processor):
+def perplexity(sess, model, model_config, saved_args, text, vocab, ipa_vocab, eval_processor):
     extra_data = build_extra_data(model_config, saved_args)
-    x, y, total_len = eval_processor(text, vocab, saved_args.seq_length, extra_data)
+    x, y, total_len = eval_processor(text, vocab, ipa_vocab, saved_args.seq_length, extra_data)
     print(LOGS[4])
     seq_length = saved_args.seq_length
     state = sess.run(model.initial_state)

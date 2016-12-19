@@ -1,46 +1,41 @@
 import tensorflow as tf
 from tensorflow.python.ops import rnn_cell
-from tensorflow.python.ops import rnn
 from tensorflow.python.ops import seq2seq
 
+import codecs
 import numpy as np
 
 class Model():
-    def __init__(self, args, sample=False, evaluation=False):
+    def __init__(self, args, infer=False, evaluation=False):
         self.args = args
-        if sample:
+        if infer:
             args.batch_size = 1
             args.seq_length = 1
-        if args.cell == 'rnn':
+
+        if args.model == 'rnn':
             cell_fn = rnn_cell.BasicRNNCell
-        elif args.cell == 'gru':
+        elif args.model == 'gru':
             cell_fn = rnn_cell.GRUCell
-        elif args.cell == 'lstm':
+        elif args.model == 'lstm':
             cell_fn = rnn_cell.BasicLSTMCell
         else:
             raise Exception("model type not supported: {}".format(args.model))
 
-        fw_cell = cell_fn(args.rnn_size, state_is_tuple=True)
-        self.cell = fw_cell = rnn_cell.MultiRNNCell([fw_cell] * args.num_layers, state_is_tuple=True)
+        cell = cell_fn(args.rnn_size, state_is_tuple=True)
+        self.cell = cell = rnn_cell.MultiRNNCell([cell] * args.num_layers, state_is_tuple=True)
         if not evaluation and args.dropout == True:
             print "Using dropout layer"
-            self.cell = fw_cell = tf.nn.rnn_cell.DropoutWrapper(fw_cell, output_keep_prob=args.keep_prob)
+            self.cell = cell = tf.nn.rnn_cell.DropoutWrapper(cell, output_keep_prob=args.keep_prob)
 
-        bw_cell = cell_fn(args.rnn_size, state_is_tuple=True)
-        self.cell2 = bw_cell = rnn_cell.MultiRNNCell([bw_cell] * args.num_layers, state_is_tuple=True)
-        if not evaluation and args.dropout == True:
-            self.cell2 = bw_cell = tf.nn.rnn_cell.DropoutWrapper(bw_cell, output_keep_prob=args.keep_prob)
-
-        self.input_data = tf.placeholder(tf.int32, [args.batch_size, args.seq_length + 2])
+        self.input_data = tf.placeholder(tf.int32, [args.batch_size, args.seq_length])
         self.targets = tf.placeholder(tf.int32, [args.batch_size, args.seq_length])
-        self.initial_state = fw_cell.zero_state(args.batch_size, tf.float32)
-        self.initial_state2 = bw_cell.zero_state(args.batch_size, tf.float32)
+        self.initial_state = cell.zero_state(args.batch_size, tf.float32)
 
         with tf.variable_scope('rnnlm'):
-            softmax_w = tf.get_variable("softmax_w", [2*args.rnn_size, args.vocab_size])
+            softmax_w = tf.get_variable("softmax_w", [args.rnn_size, args.vocab_size])
             softmax_b = tf.get_variable("softmax_b", [args.vocab_size])
             with tf.device("/cpu:0"):
-                embedding = tf.get_variable("embedding", [args.vocab_size, args.rnn_size])
+                embedding = tf.get_variable("embedding", [args.ipa_vocab_size, args.rnn_size])
                 inputs = tf.nn.embedding_lookup(embedding, self.input_data)
 
         outputs = []
@@ -49,28 +44,13 @@ class Model():
         with tf.variable_scope("RNN"):
             for time_step in range(args.seq_length):
                 if time_step > 0: tf.get_variable_scope().reuse_variables()
-                (cell_output, state) = fw_cell(inputs[:, time_step, :], state)
+                (cell_output, state) = cell(inputs[:, time_step, :], state)
                 if time_step == args.seq_length - 1:
-                    self.last_state = state
+                    self.final_state = state
                 outputs.append(cell_output)
 
-        back_outputs = []
-        back_state = self.initial_state2
-
-        with tf.variable_scope("BRNN"):
-            for time_step in range(args.seq_length):
-                if time_step > 0: tf.get_variable_scope().reuse_variables()
-                (cell_output, back_state) = bw_cell(inputs[:, args.seq_length-time_step+1, :], back_state)
-                back_outputs.append(cell_output)
-
-        op = []
-        for i in range(len(outputs)):
-            op.append(tf.concat(1, [outputs[i], back_outputs[args.seq_length - i - 1]]))
-
-        output = tf.reshape(tf.concat(1, op), [-1, 2*args.rnn_size])
-
+        output = tf.reshape(tf.concat(1, outputs), [-1, args.rnn_size])
         self.logits = tf.matmul(output, softmax_w) + softmax_b
-
         self.probs = tf.nn.softmax(self.logits)
         self.loss = seq2seq.sequence_loss_by_example([self.logits],
                 [tf.reshape(self.targets, [-1])],
@@ -89,8 +69,8 @@ class Model():
         for char in prime[:-1]:
             x = np.zeros((1, 1))
             x[0, 0] = vocab[char]
-            feed = {self.input_data: x, self.initial_state: state}
-            [state] = sess.run([self.last_state], feed)
+            feed = {self.input_data: x, self.initial_state:state}
+            [state] = sess.run([self.final_state], feed)
 
         def weighted_pick(weights):
             t = np.cumsum(weights)
@@ -103,7 +83,7 @@ class Model():
             x = np.zeros((1, 1))
             x[0, 0] = vocab[char]
             feed = {self.input_data: x, self.initial_state:state}
-            [probs, state] = sess.run([self.probs, self.last_state], feed)
+            [probs, state] = sess.run([self.probs, self.final_state], feed)
             p = probs[0]
 
             if sampling_type == 0:

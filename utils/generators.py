@@ -35,6 +35,13 @@ def partial_brnn(xdata, batch_size, num_batches, extra_data=None):
     y_batches = np.split(ydata.reshape(batch_size, -1), num_batches, 1)
     return x_batches, y_batches
 
+def phones_rnn(xdata, batch_size, num_batches, extra_data=None):
+    ydata = np.copy(xdata)
+    new_x = extra_data["ipa_data"]
+    self.x_batches = np.split(new_x.reshape(batch_size, -1), num_batches, 1)
+    self.y_batches = np.split(ydata.reshape(batch_size, -1), num_batches, 1)
+    return x_batches, y_batches
+
 def next_char_char(xdata, batch_size, num_batches, extra_data=None):
     ydata = np.copy(xdata)
     ydata[:-1] = xdata[1:]
@@ -45,20 +52,6 @@ def next_char_char(xdata, batch_size, num_batches, extra_data=None):
 
 def same_char_char(xdata, extra_data=None):
     ydata = np.copy(xdata)
-    x_batches = np.split(xdata.reshape(batch_size, -1), num_batches, 1)
-    y_batches = np.split(ydata.reshape(batch_size, -1), num_batches, 1)
-    return x_batches, y_batches
-
-def same_ipa_char(xdata, extra_data=None):
-    ydata = np.copy(extra_data)
-    x_batches = np.split(xdata.reshape(batch_size, -1), num_batches, 1)
-    y_batches = np.split(ydata.reshape(batch_size, -1), num_batches, 1)
-    return x_batches, y_batches
-
-def next_ipa_ipa(xdata, extra_data=None):
-    ydata = np.copy(xdata)
-    ydata[:-1] = xdata[1:]
-    ydata[-1] = xdata[0]
     x_batches = np.split(xdata.reshape(batch_size, -1), num_batches, 1)
     y_batches = np.split(ydata.reshape(batch_size, -1), num_batches, 1)
     return x_batches, y_batches

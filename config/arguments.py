@@ -42,9 +42,12 @@ parser.add_argument('--init_from', type=str, default=None,
 subparsers = parser.add_subparsers(help='Type of model involved', dest='model')
 a_parser = subparsers.add_parser("partial_brnn")
 b_parser = subparsers.add_parser("brnn_gap")
+c_parser = subparsers.add_parser("phones_rnn")
 
 a_parser.add_argument('--back_steps', type=int, default=5,
                      help='Number of steps in BRNN')
+c_parser.add_argument('--ipa_file', type=str, default="final_encoding.txt",
+                     help='path to IPA file')
 
 eval_parser = argparse.ArgumentParser()
 eval_parser.add_argument('--save_dir', type=str, default='save',
