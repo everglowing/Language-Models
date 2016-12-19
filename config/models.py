@@ -14,7 +14,7 @@ models = {
         "processor": "default_process",
         "build_variables": ("RNN", "beta"),
         "eval_processor": {
-            "function": "partial_brnn",
+            "function": "char_to_char",
             "extra": {
                 "extra_args": []
             }
