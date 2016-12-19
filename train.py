@@ -25,13 +25,13 @@ def main():
 
 def train(args):
     model_config = models[args.model]
-    generator = getattr(generators, model_config["generator"])
+    generator = getattr(generators, model_config["generator"]["function"])
     processor = getattr(processors, model_config["processor"])
     Model = getattr(importlib.import_module(model_config["module"]), "Model")
 
     data_loader = TextLoader(data_dir=args.data_dir,
                              processor=processor)
-    extra_data = build_extra_data(model_config, args, data_loader)
+    extra_data = build_extra_data(model_config["generator"]["extra"], args, data_loader)
     batch_loader = BatchLoader(input_seq=data_loader.data,
                                generator=generator,
                                batch_size=args.batch_size,
