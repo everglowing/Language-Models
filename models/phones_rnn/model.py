@@ -6,9 +6,9 @@ import codecs
 import numpy as np
 
 class Model():
-    def __init__(self, args, infer=False, evaluation=False):
+    def __init__(self, args, sample=False, evaluation=False):
         self.args = args
-        if infer:
+        if sample:
             args.batch_size = 1
             args.seq_length = 1
 
