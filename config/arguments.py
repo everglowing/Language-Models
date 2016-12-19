@@ -48,6 +48,7 @@ a_parser = subparsers.add_parser("partial_brnn")
 b_parser = subparsers.add_parser("brnn_gap")
 c_parser = subparsers.add_parser("phones_rnn")
 d_parser = subparsers.add_parser("phone_to_phone")
+e_parser = subparsers.add_parser("char_to_char")
 
 a_parser.add_argument('--back_steps', type=int, default=5,
                      help='Number of steps in BRNN')

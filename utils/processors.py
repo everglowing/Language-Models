@@ -104,3 +104,14 @@ def phone_to_phone(text, vocab, ipa_vocab, seq_length, extra_data=None):
     ipa_y = np.array(ipa_x[1:]).reshape((-1, seq_length))
     ipa_x = np.array(ipa_x[:-1]).reshape((-1, seq_length))
     return ipa_x, ipa_y, total_len
+
+def char_to_char(text, vocab, ipa_vocab, seq_length, extra_data=None):
+    x = [vocab[c] if c in vocab else vocab['UNK'] for c in text]
+    x = [vocab['<S>']] + x + [vocab['</S>']]
+    total_len = len(x) - 1
+    # pad ipa_x so the batch_size divides it
+    while len(x) % 200 != 1:
+        x.append(ipa_vocab[' '])
+    y = np.array(x[1:]).reshape((-1, seq_length))
+    x = np.array(x[:-1]).reshape((-1, seq_length))
+    return x, y, total_len

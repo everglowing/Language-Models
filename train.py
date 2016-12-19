@@ -107,7 +107,11 @@ def run_epoch(sess, model, saver, saver2, args, batch_loader, e, plot_data):
         if b == 0:
             feed = {model.input_data: x, model.targets: y}
         else:
-            # Feed previous state if it's not the first batch
+            # Alternate approach, need to check
+            # feed = {model.input_data: x, model.targets: y}
+            # for i, (c, h) in enumerate(model.initial_state):
+            #     feed[c] = state[i].c
+            #     feed[h] = state[i].h
             feed = {model.input_data: x, model.targets: y, model.initial_state: state}
         train_loss, state, _ = sess.run([model.cost, model.last_state, model.train_op], feed)
         end = time.time()

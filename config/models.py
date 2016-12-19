@@ -1,25 +1,25 @@
 # Configuration of various language models
 
 models = {
-    "partial_brnn": {
-        "module": "models.partial_brnn.model",
+    "char_to_char": {
+        "module": "models.char_to_char.model",
         # used to generate batches from the tensor
         "generator": {
-            "function": "partial_brnn",
+            "function": "char_to_char",
             "extra": {
-                "extra_args": ["seq_length", "back_steps"],
-                "data_loader": ["vocab"],
+                "extra_args": [],
+                "data_loader": [],
             }
         },
         "processor": "default_process",
-        "build_variables": (),
+        "build_variables": ("RNN", "beta"),
         "eval_processor": {
             "function": "partial_brnn",
             "extra": {
-                "extra_args": ["back_steps"]
+                "extra_args": []
             }
         },
-        "summary": "A special BRNN architecture with fixed number of back steps for each timestep."
+        "summary": "The vanilla next character predictor unidirectional RNN."
     },
     "brnn_gap": {
         "module": "models.brnn_gap.model",
