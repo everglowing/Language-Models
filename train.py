@@ -99,8 +99,6 @@ def run_epoch(sess, model, saver, args, batch_loader, e, plot_data):
     for b in range(batch_loader.num_batches):
         start = time.time()
         x, y = batch_loader.next_batch()
-        import pdb
-        pdb.set_trace()
         if b == 0:
             feed = {model.input_data: x, model.targets: y}
         else:
