@@ -56,11 +56,16 @@ def train(args):
         with open(os.path.join(args.init_from, FILES[3])) as f:
             saved_vocab = cPickle.load(f)
         assert saved_vocab == data_loader.vocab, ERRORS[8]
+        with open(os.path.join(args.init_from, FILES[7])) as f:
+            saved_ipa_vocab = cPickle.load(f)
+        assert saved_ipa_vocab == data_loader.ipa_vocab, ERRORS[8]
 
     with open(os.path.join(args.save_dir, FILES[2]), 'wb') as f:
         cPickle.dump(args, f)
     with open(os.path.join(args.save_dir, FILES[3]), 'wb') as f:
         cPickle.dump(data_loader.vocab, f)
+    with open(os.path.join(args.save_dir, FILES[7]), 'wb') as f:
+        cPickle.dump(data_loader.ipa_vocab, f)
     # Writing a textual summary of the model being used
     with open(os.path.join(args.save_dir, FILES[4]), 'wb') as f:
         summary = model_config["summary"] + "\n" + json.dumps(args.__dict__)
