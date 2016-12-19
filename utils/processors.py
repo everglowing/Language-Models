@@ -93,5 +93,3 @@ def phones_rnn(text, vocab, ipa_vocab, seq_length, extra_data=None):
     y = np.array(x[:-1]).reshape((-1, seq_length))
     ipa_x = np.array(ipa_x[:-1]).reshape((-1, seq_length))
     return ipa_x, y, total_len
-
-

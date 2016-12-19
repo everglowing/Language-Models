@@ -54,5 +54,5 @@ eval_parser.add_argument('--save_dir', type=str, default='save',
                         help='model directory to store checkpointed models')
 eval_parser.add_argument('--text', type=str,
                         help='filename of text to evaluate on')
-eval_parser.add_argument('--seq_length', type=str, default=200,
+eval_parser.add_argument('--seq_length', type=int, default=200,
                         help='Length of evaluation sequence length')
