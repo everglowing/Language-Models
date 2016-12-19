@@ -46,7 +46,7 @@ class Model():
                 if time_step > 0: tf.get_variable_scope().reuse_variables()
                 (cell_output, state) = cell(inputs[:, time_step, :], state)
                 if time_step == args.seq_length - 1:
-                    self.final_state = state
+                    self.last_state = state
                 outputs.append(cell_output)
 
         output = tf.reshape(tf.concat(1, outputs), [-1, args.rnn_size])
