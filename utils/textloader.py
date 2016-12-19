@@ -23,7 +23,7 @@ class TextLoader(object):
         self.ipa_data_file = ipa_data_file = os.path.join(data_dir, FILES[8])
         self.encoding = encoding
         if check_saved and \
-           (os.path.exists(vocab_file) and os.path.exists(data_file) \
+           (os.path.exists(vocab_file) and os.path.exists(data_file) and \
             os.path.exists(ipa_vocab_file) and os.path.exists(ipa_data_file)):
             print(LOGS[1])
             self.load_processed()
