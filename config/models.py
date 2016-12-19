@@ -76,7 +76,7 @@ models = {
             }
         },
         "summary": "An RNN used to learn the mapping between phones and characters"
-    }
+    },
     "phone_to_phone": {
         "module": "models.phone_to_phone.model",
         # used to generate batches from the tensor
@@ -95,5 +95,5 @@ models = {
             }
         },
         "summary": "An RNN used to learn the mapping between phones and phones"
-    }
+    },
 }
