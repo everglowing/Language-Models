@@ -41,6 +41,7 @@ parser.add_argument('--init_from', type=str, default=None,
 
 subparsers = parser.add_subparsers(help='Type of model involved', dest='model')
 a_parser = subparsers.add_parser("partial_brnn")
+b_parser = subparsers.add_parser("brnn_gap")
 
 a_parser.add_argument('--back_steps', type=int, default=5,
                      help='Number of steps in BRNN')
