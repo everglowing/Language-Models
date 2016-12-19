@@ -4,6 +4,7 @@ from .strings import FILES
 import codecs
 import collections
 import numpy as np
+import re
 
 # Helper function
 def generate_ipa(ipa_file=FILES[6]):
