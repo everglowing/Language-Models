@@ -55,7 +55,7 @@ class Model():
 
         if evaluation:
             self.logits = self.logits[:,:args.splits[0]]
-            loss_len = args.target_chars
+            loss_len = args.splits[0]
 
         self.probs = tf.nn.softmax(self.logits)
         self.loss = seq2seq.sequence_loss_by_example([self.logits],
