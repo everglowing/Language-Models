@@ -58,8 +58,8 @@ class TextLoader(object):
         self.ipa_data = np.load(self.ipa_data_file)
 
     def save_data(self):
-        np.save(self.data_file, self.ipa_data)
-        np.save(self.ipa_data_file, self.data)
+        np.save(self.data_file, self.data)
+        np.save(self.ipa_data_file, self.ipa_data)
         with open(self.vocab_file, 'wb') as f:
             cPickle.dump(self.vocab, f)
         with open(self.ipa_vocab_file, 'wb') as f:
