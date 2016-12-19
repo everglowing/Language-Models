@@ -90,8 +90,8 @@ def phones_rnn(text, vocab, ipa_vocab, seq_length, extra_data=None):
     while len(x) % 200 != 1:
         x.append(vocab[' '])
         ipa_x.append(ipa_vocab[' '])
-    y = np.array(x[:-1]).reshape((-1, batch_size))
-    ipa_x = np.array(ipa_x[:-1]).reshape((-1, batch_size))
+    y = np.array(x[:-1]).reshape((-1, seq_length))
+    ipa_x = np.array(ipa_x[:-1]).reshape((-1, seq_length))
     return ipa_x, y, total_len
 
 
