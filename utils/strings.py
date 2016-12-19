@@ -18,7 +18,8 @@ LOGS = {
     1: "Reading pre-processed data..",
     2: "{}/{} (epoch {}), train_loss = {:.3f}, time/batch = {:.3f}",
     3: "model saved to {}",
-    4: "Evaluation data loaded."
+    4: "Evaluation data loaded.",
+    5: "Batch {} of {}"
 }
 
 FILES = {

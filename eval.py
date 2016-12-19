@@ -66,6 +66,7 @@ def perplexity(sess, model, model_config, saved_args, text, vocab, ipa_vocab, ev
     state = sess.run(model.initial_state)
     total_loss = 0.0
     for i in range(x.shape[0]):
+        print(LOGS[5].format(i+1, x.shape[0]))
         feed = {model.input_data: x[i:i+1, :], model.targets: y[i:i+1, :],
                 model.initial_state: state}
         [state, loss] = sess.run([model.last_state, model.loss], feed)
