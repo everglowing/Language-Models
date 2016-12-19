@@ -1,6 +1,7 @@
 # List of text processor utilities
 from .strings import FILES
 
+import codecs
 import collections
 import numpy as np
 
