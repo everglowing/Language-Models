@@ -27,6 +27,6 @@ def partial_brnn(text, vocab, back_steps, seq_length):
         x1.append(np.concatenate((prep_array, x[i])))
         prep_array = x[i][-1*(back_steps - 1):]
     x = np.array(x1)
-    return x, y
+    return x, y, total_len
 
 

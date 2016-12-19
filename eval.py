@@ -55,7 +55,7 @@ def eval(args):
         print('perplexity: {0}'.format(ppl))
 
 def perplexity(sess, model, saved_args, text, vocab, eval_processor):
-    x, y = eval_processor(text, vocab, saved_args.back_steps, saved_args.seq_length)
+    x, y, total_len = eval_processor(text, vocab, saved_args.back_steps, saved_args.seq_length)
     seq_length = saved_args.seq_length
     state = sess.run(model.initial_state)
     total_loss = 0.0
