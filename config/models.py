@@ -57,25 +57,6 @@ models = {
             }
         },
         "summary": "An RNN used to learn the mapping between phones and characters"
-    }
-    "phones_rnn": {
-        "module": "models.phones_rnn.model",
-        # used to generate batches from the tensor
-        "generator": {
-            "function": "phones_rnn",
-            "extra": {
-                "extra_args": [],
-                "data_loader": ["ipa_data"],
-            }
-        },
-        "processor": "ipa_process",
-        "eval_processor":{
-            "function": "phones_rnn",
-            "extra": {
-                "extra_args": []
-            }
-        },
-        "summary": "An RNN used to learn the mapping between phones and characters"
     },
     "phone_to_phone": {
         "module": "models.phone_to_phone.model",
