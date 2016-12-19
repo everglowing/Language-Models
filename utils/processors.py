@@ -30,7 +30,7 @@ def partial_brnn(text, vocab, seq_length, extra_data=None):
     x = np.array(x1)
     return x, y, total_len
 
-def brnn_gap(text, vocab, seq_length):
+def brnn_gap(text, vocab, seq_length, extra_data=None):
     x = [vocab[c] if c in vocab else vocab['UNK'] for c in text]
     x = [vocab['<S>']] + x + [vocab['</S>']]
     total_len = len(x) - 1
