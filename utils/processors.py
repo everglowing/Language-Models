@@ -84,7 +84,7 @@ def phones_rnn(text, vocab, ipa_vocab, seq_length, extra_data=None):
     x = [vocab[c] if c in vocab else vocab['UNK'] for c in text]
     x = [vocab['<S>']] + x + [vocab['</S>']]
     ipa_x = [ipa_vocab[c] if c in ipa_vocab else ipa_vocab['UNK'] for c in text]
-    ipa_x = [ipa_vocab['<S>']] + x + [ipa_vocab['</S>']]
+    ipa_x = [ipa_vocab['<S>']] + ipa_x + [ipa_vocab['</S>']]
     total_len = len(x) - 1
     # pad x so the batch_size divides it
     while len(x) % 200 != 1:
