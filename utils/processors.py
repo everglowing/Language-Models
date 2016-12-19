@@ -93,3 +93,15 @@ def phones_rnn(text, vocab, ipa_vocab, seq_length, extra_data=None):
     y = np.array(x[:-1]).reshape((-1, seq_length))
     ipa_x = np.array(ipa_x[:-1]).reshape((-1, seq_length))
     return ipa_x, y, total_len
+
+def phone_to_phone(text, vocab, ipa_vocab, seq_length, extra_data=None):
+    ipa_x = [ipa_vocab[c] if c in ipa_vocab else ipa_vocab['UNK'] for c in text]
+    ipa_x = [ipa_vocab['<S>']] + ipa_x + [ipa_vocab['</S>']]
+    total_len = len(ipa_x) - 1
+    # pad x so the batch_size divides it
+    while len(x) % 200 != 1:
+        x.append(vocab[' '])
+        ipa_x.append(ipa_vocab[' '])
+    ipa_y = np.array(ipa_x[1:]).reshape((-1, seq_length))
+    ipa_x = np.array(ipa_x[:-1]).reshape((-1, seq_length))
+    return ipa_x, ipa_y, total_len

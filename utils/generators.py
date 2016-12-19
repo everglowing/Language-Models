@@ -42,7 +42,16 @@ def phones_rnn(xdata, batch_size, num_batches, extra_data=None):
     y_batches = np.split(ydata.reshape(batch_size, -1), num_batches, 1)
     return x_batches, y_batches
 
-def next_char_char(xdata, batch_size, num_batches, extra_data=None):
+def phone_to_phone(xdata, batch_size, num_batches, extra_data=None):
+    new_x = extra_data["ipa_data"]
+    ydata = np.copy(new_x)
+    ydata[:-1] = new_x[1:]
+    ydata[-1] = new_x[0]
+    x_batches = np.split(new_x.reshape(batch_size, -1), num_batches, 1)
+    y_batches = np.split(ydata.reshape(batch_size, -1), num_batches, 1)
+    return x_batches, y_batches
+
+def char_to_char(xdata, batch_size, num_batches, extra_data=None):
     ydata = np.copy(xdata)
     ydata[:-1] = xdata[1:]
     ydata[-1] = xdata[0]
