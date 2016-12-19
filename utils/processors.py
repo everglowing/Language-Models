@@ -46,5 +46,6 @@ def brnn_gap(text, vocab, seq_length, extra_data=None):
         x1.insert(0, np.concatenate((x[i], app_array)))
         app_array = x[i][:2]
     x = np.array(x1)
+    return x, y, total_len
 
 
