@@ -5,7 +5,7 @@ import collections
 import numpy as np
 
 # Helper function
-def generate_ipa(data, ipa_file=FILES[6]):
+def generate_ipa(ipa_file=FILES[6]):
     with codecs.open(ipa_file, "r", 'utf-8') as f:
         data = f.readlines()
     ipa_vocab = {}
@@ -38,7 +38,7 @@ def ipa_process(data):
     count_pairs = sorted(counter.items(), key=lambda x: -x[1])
     chars, _ = zip(*count_pairs)
     vocab = dict(zip(chars, range(len(chars))))
-    ipa_vocab = generate_ipa(data)
+    ipa_vocab = generate_ipa()
     return vocab, ipa_vocab
 
 # Evaluation processors
