@@ -57,6 +57,7 @@ def eval(args):
 def perplexity(sess, model, model_config, saved_args, text, vocab, eval_processor):
     extra_data = build_extra_data(model_config, saved_args)
     x, y, total_len = eval_processor(text, vocab, saved_args.seq_length, extra_data)
+    print(LOGS[4])
     seq_length = saved_args.seq_length
     state = sess.run(model.initial_state)
     total_loss = 0.0
@@ -70,7 +71,7 @@ def perplexity(sess, model, model_config, saved_args, text, vocab, eval_processo
     avg_entropy = total_loss / len(text)
     return np.exp(avg_entropy)  # this is the perplexity
 
-def build_extra_data(model_config, args, data_loader):
+def build_extra_data(model_config, args):
     extra_data = {}
     for arg in model_config["extra_args"]:
         extra_data[arg] = getattr(args, arg)
