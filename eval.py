@@ -51,7 +51,8 @@ def eval(args):
         else:
             raise ModelNotFound(ERRORS[9])
         # calculate perplexity
-        ppl = perplexity(sess, model, model_config, saved_args, text, vocab, eval_processor)
+        eval_extra = model_config["eval_processor"]["extra"]
+        ppl = perplexity(sess, model, eval_extra, saved_args, text, vocab, eval_processor)
         print('perplexity: {0}'.format(ppl))
 
 def perplexity(sess, model, model_config, saved_args, text, vocab, eval_processor):
