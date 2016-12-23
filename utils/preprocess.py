@@ -23,6 +23,9 @@ def sentence_sort(data):
     output = ""
     last_inserted = -1
     for index, sentence in enumerate(str_list):
+        if len(sentence.split()) < 4:
+            last_inserted = index
+            continue
         output += sentence + separator
         # Logic for inserting new lines
         num = randint(4, 10)
