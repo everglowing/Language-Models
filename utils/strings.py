@@ -20,7 +20,8 @@ LOGS = {
     3: "model saved to {}",
     4: "Evaluation data loaded.",
     5: "Batch {} of {}",
-    6: "Loaded weights from weights/ folder"
+    6: "Loaded weights from weights/ folder",
+    7: "Using {} as a separator"
 }
 
 FILES = {

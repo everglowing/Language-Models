@@ -12,6 +12,7 @@ import os
 class TextLoader(object):
     def __init__(self,
                  data_dir,
+                 preprocess=None,
                  processor=default_process,
                  check_saved=True,
                  filename='input.txt',
@@ -37,7 +38,8 @@ class TextLoader(object):
             # codecs is needed due to utf-8 setting
             with codecs.open(input_file, "r", encoding=encoding) as f:
                 data = f.read()
-
+            if preprocess is not None:
+                data = preprocess(data)
             self.vocab, self.ipa_vocab, self.splits = processor(data)
             self.vocab_size = len(self.vocab)
             self.ipa_vocab_size = len(self.ipa_vocab)
