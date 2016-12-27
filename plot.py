@@ -18,7 +18,7 @@ file1 = os.path.join(args.save_dir, FILES[5])
 file2 = os.path.join(args.save_dir2, FILES[5])
 
 data = np.genfromtxt(file1, delimiter=",")
-data2 = np.genfromtxt("graph2.txt",delimiter=",")
+data2 = np.genfromtxt(file2,delimiter=",")
 X = data[:,0]
 Y = data[:,1]
 #Z = data[:,2]
