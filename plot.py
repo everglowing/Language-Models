@@ -2,7 +2,7 @@
 from mpl_toolkits.mplot3d import Axes3D
 from scipy.interpolate import spline
 from config.arguments import plot_parser
-from config.strings import FILES
+from utils.strings import FILES
 
 import matplotlib.pyplot as plt
 import numpy as np
