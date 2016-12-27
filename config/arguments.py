@@ -74,5 +74,9 @@ eval_parser.add_argument('--seq_length', type=int, default=200,
 plot_parser = argparse.ArgumentParser()
 plot_parser.add_argument('--save_dir', type=str, default='save',
                         help='model directory to store checkpointed models')
+plot_parser.add_argument('--save_dir2', type=str, default='save',
+                        help='model directory 2 to store checkpointed models')
 plot_parser.add_argument('--smoothing', type=int, default=1,
                         help='filename of text to evaluate on')
+plot_parser.add_argument('--show_fig', type=bool, default=False,
+                        help='Decide whether or not to show picture')

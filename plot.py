@@ -1,15 +1,23 @@
 # Function that reads multiple paths and plots them all
-import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from scipy.interpolate import spline
-import numpy as np
+from config.arguments import plot_parser
+from config.strings import FILES
 
-def moving_average(a, n=500):
+import matplotlib.pyplot as plt
+import numpy as np
+import os
+
+def moving_average(a, n=1):
     ret = np.cumsum(a, dtype=float)
     ret[n:] = ret[n:] - ret[:-n]
     return ret[n - 1:] / n
 
-data = np.genfromtxt("graph.txt",delimiter=",")
+args = plot_parser.parse_args()
+file1 = os.path.join(args.save_dir, FILES[5])
+file2 = os.path.join(args.save_dir2, FILES[5])
+
+data = np.genfromtxt(file1, delimiter=",")
 data2 = np.genfromtxt("graph2.txt",delimiter=",")
 X = data[:,0]
 Y = data[:,1]
@@ -17,13 +25,13 @@ Y = data[:,1]
 X2 = data2[:,0]
 Y2 = data2[:,1]
 
-X = moving_average(X)
-Y = moving_average(Y)
-X2 = moving_average(X2)
-Y2 = moving_average(Y2)
+X = moving_average(X, n)
+Y = moving_average(Y, n)
+X2 = moving_average(X2, n)
+Y2 = moving_average(Y2, n)
 
-#fig = plt.figure()
-#ax = fig.add_subplot(111, projection='3d')
-#ax.contour(X, Y, Z)
 plt.plot(X2,Y2,X,Y, linewidth=2.0)
-plt.show()
+plt.savefig('plot.png')
+
+if args.show_fig:
+    plt.show()
