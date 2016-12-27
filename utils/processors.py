@@ -154,7 +154,7 @@ def char_to_char(text, vocab, ipa_vocab, seq_length, extra_data=None):
     total_len = len(x) - 1
     # pad ipa_x so the batch_size divides it
     while len(x) % 200 != 1:
-        x.append(ipa_vocab[' '])
+        x.append(vocab[' '])
     y = np.array(x[1:]).reshape((-1, seq_length))
     x = np.array(x[:-1]).reshape((-1, seq_length))
     return x, y, total_len
