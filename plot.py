@@ -5,6 +5,7 @@ from config.arguments import plot_parser
 from utils.strings import FILES
 
 import matplotlib.pyplot as plt
+plt.use('Agg')
 import numpy as np
 import os
 
