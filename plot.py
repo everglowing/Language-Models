@@ -25,10 +25,10 @@ Y = data[:,1]
 X2 = data2[:,0]
 Y2 = data2[:,1]
 
-X = moving_average(X, n)
-Y = moving_average(Y, n)
-X2 = moving_average(X2, n)
-Y2 = moving_average(Y2, n)
+X = moving_average(X, args.smoothing)
+Y = moving_average(Y, args.smoothing)
+X2 = moving_average(X2, args.smoothing)
+Y2 = moving_average(Y2, args.smoothing)
 
 plt.plot(X2,Y2,X,Y, linewidth=2.0)
 plt.savefig('plot.png')
